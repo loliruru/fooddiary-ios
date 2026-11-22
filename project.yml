@@ -20,8 +20,22 @@ targets:
         INFOPLIST_KEY_CFBundleDisplayName: 食迹
         INFOPLIST_KEY_UIApplicationSceneManifest_Generation: "YES"
         INFOPLIST_KEY_UILaunchScreen_Generation: "YES"
+  FoodDiaryVisualTests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - FoodDiaryVisualTests
+    dependencies:
+      - target: FoodDiary
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: "YES"
+        TEST_TARGET_NAME: FoodDiary
 schemes:
   FoodDiary:
     build:
       targets:
         FoodDiary: all
+        FoodDiaryVisualTests: [test]
+    test:
+      targets: [FoodDiaryVisualTests]
