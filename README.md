@@ -1,0 +1,33 @@
+# 食迹 FoodDiary
+
+食迹是一款用来记录饮食和身体感受的 iOS app。当前 Phase 0 提供 SwiftUI 空首页和可生成未签名 IPA 的工程骨架。
+
+| 项目 | 配置 |
+| --- | --- |
+| 平台 | iOS 17.0 及以上 |
+| 工程生成 | XcodeGen，配置在 `project.yml` |
+| 应用 Bundle ID | `com.chinokafuu.fooddiary.ios` |
+| 云端编译 | GitHub Actions，`macos-26` |
+
+产品规格以 [V2](FoodDiary_Codex_Execution_Spec_v2.md) 为准。阶段进度和续接步骤见 [AGENTS.md](AGENTS.md)。
+
+## 云端构建并下载 IPA
+
+1. 将提交推送到 FoodDiary GitHub 仓库的 `main`。也可进入 **Actions**，选择 **iOS unsigned IPA**，使用 **Run workflow** 手动触发。[FoodDiary Actions](https://github.com/loliruru/fooddiary-ios/actions)
+2. 打开对应提交的运行记录。构建日志中会列出 Xcode 和 SDK 版本，随后安装或调用 XcodeGen，生成工程并编译 arm64 真机 Release 版本。
+3. 构建成功后，在该次运行的 **Artifacts** 下载 `FoodDiary-unsigned-ipa-<commit SHA>`，解压得到 `FoodDiary-unsigned.ipa`。面向 `main` 的 PR 会运行构建检查。
+4. 保留用于签名的原始 IPA。在 Windows PowerShell 可列出包内容，核对 `Payload/FoodDiary.app/Info.plist` 和 `Payload/FoodDiary.app/FoodDiary`。
+
+   ```powershell
+   tar -tf .\FoodDiary-unsigned.ipa
+   ```
+
+CI 不需要签名证书或 Apple ID。生成的工程、派生数据和 IPA 均由构建生成，Git 只跟踪源码和工程配置。
+
+## 在 Windows 11 上侧载到 iPhone
+
+1. 将 iPhone 连接到 Windows 11，允许电脑访问设备并在 Sideloadly 中选中该 iPhone。
+2. 在 Sideloadly 选择下载并解压得到的 `FoodDiary-unsigned.ipa`，使用你自己的 Apple ID 重新签名并安装。下载的 IPA 需要签名才能在设备上安装。
+3. 后续以相同的 Bundle ID 和 Apple ID 覆盖安装，避免先卸载，以保留本机数据。首次设备授权和个人签名有效期按设备及签名工具提示处理。
+
+应用的饮食和健康数据保存在 iPhone 本机。GitHub Actions artifact 只包含构建产物。Phase 5 提供完整 JSON 备份和 CSV 导出。

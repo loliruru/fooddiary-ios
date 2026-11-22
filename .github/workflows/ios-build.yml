@@ -1,0 +1,43 @@
+name: iOS unsigned IPA
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: macos-26
+    timeout-minutes: 25
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Show Xcode and SDK versions
+        run: |
+          xcodebuild -version
+          xcodebuild -showsdks
+
+      - name: Install XcodeGen
+        run: |
+          brew list --versions xcodegen || brew install xcodegen
+          xcodegen --version
+
+      - name: Build and verify unsigned IPA
+        run: bash scripts/build-ios-unsigned.sh
+
+      - name: Upload unsigned IPA
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v7
+        with:
+          name: FoodDiary-unsigned-ipa-${{ github.sha }}
+          path: build/FoodDiary-unsigned.ipa
+          if-no-files-found: error
+          compression-level: 0
