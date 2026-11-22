@@ -1,6 +1,6 @@
 # 食迹 FoodDiary
 
-食迹是一款用来记录饮食和身体感受的 iOS app。当前 Phase 0 提供 SwiftUI 空首页和可生成未签名 IPA 的工程骨架。
+食迹是一款用来记录饮食和身体感受的 iOS app。当前 Phase 1 提供首页、记录、避雷和设置四个页面，以及三种独立录入入口的界面预览。
 
 | 项目 | 配置 |
 | --- | --- |
@@ -31,3 +31,14 @@ CI 不需要签名证书或 Apple ID。生成的工程、派生数据和 IPA 均
 3. 后续以相同的 Bundle ID 和 Apple ID 覆盖安装，避免先卸载，以保留本机数据。首次设备授权和个人签名有效期按设备及签名工具提示处理。
 
 应用的饮食和健康数据保存在 iPhone 本机。GitHub Actions artifact 只包含构建产物。Phase 5 提供完整 JSON 备份和 CSV 导出。
+
+## App Icon
+
+图标以瓷盘和嫩叶为主题，通过内置 ImageGen 生成。应用使用 [1024×1024 PNG](FoodDiary/Assets.xcassets/AppIcon.appiconset/AppIcon.png)。
+
+<details>
+<summary>ImageGen 提示词</summary>
+
+Create a finished original 1024 × 1024 square iOS app icon for 食迹, a warm private food and wellbeing diary. Flat, modern emblem: one large ivory ceramic plate viewed from directly above, with a clean cream rim and a simple two-leaf sage-green sprout sweeping diagonally inside the plate. Use a solid muted deep pine-green background (#244C3E) that extends all the way to all four square edges, warm porcelain (#FAF6E9), and sage (#6D9379). Center the emblem and make it occupy about 68 percent of the canvas so it remains instantly legible at 32 pixels. Use confident shapes, generous negative space, at most one inner rim line, and crisp edges. Sophisticated, friendly, quiet. No lettering, numbers, branding, transparency, outer border, pre-rounded outer corners, drop shadow, mockup, photographic detail, or decorative objects. Single icon only, edge to edge opaque square.
+
+</details>

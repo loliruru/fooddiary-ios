@@ -4,7 +4,7 @@ import SwiftUI
 struct FoodDiaryApp: App {
     var body: some Scene {
         WindowGroup {
-            HomeView()
+            DiaryTabs()
         }
     }
 }
