@@ -39,8 +39,8 @@ jobs:
           )
           xcrun simctl boot "$device"
           xcrun simctl bootstatus "$device" -b
-          xcrun simctl status_bar "$device" override --time "9:41" --dataNetwork wifi --wifiMode active --wifiBars 3 --cellularMode active --cellularBars 4 --batteryState unplugged --batteryLevel 100
           for appearance in light dark; do
+            echo "Testing $appearance appearance"
             xcrun simctl ui "$device" appearance "$appearance"
             set +e
             xcodebuild test -project FoodDiary.xcodeproj -scheme FoodDiary -destination "platform=iOS Simulator,id=$device" -parallel-testing-enabled NO -derivedDataPath build/DerivedData -resultBundlePath "build/$appearance.xcresult" -quiet
