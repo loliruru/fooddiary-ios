@@ -16,7 +16,7 @@
 - 自制餐的 `IngredientItem` 可有多条，每条独立记录名称、可选采购来源、数量和备注。支持多个来源、同一来源采购多种食材、部分或全部留空来源，以及只填餐名。历史保留每条明细及其来源。
 - `MealCombo` 是独立的自制餐模板，仅在用户选择「保存为 Combo」时创建。选择模板时复制内容到新餐。本次编辑、模板编辑和模板删除彼此独立，既有餐食和症状关联保持完整。
 - `SymptomEvent` 是独立事件，症状开始时间 `symptomTime` 与填写时间 `recordedAt` 分开。首页和时间线都可独立新增；从餐详情进入也创建独立事件。用户可显式选择关联某餐，仍可回溯其他摄入。腹泻次数仅在选中腹泻时展示，持久化值为非负整数。未填感受保持未知。
-- Phase 4 以症状开始时间为基准，用集中配置的 48 小时向前查询所有摄入。按时间倒序显示日期、时间差、自制餐食材及来源，候选初始为未判断。由用户逐条判断怀疑、暂不认为有关或不确定，`SymptomExposureLink` 保存选择。允许多个怀疑候选，也允许全部保持未判断。
+- Phase 4 以症状开始时间为基准，查询此前 48 小时的所有摄入，窗口时长集中配置。按时间倒序显示日期、时间差、自制餐食材及来源，候选初始为未判断。由用户逐条判断怀疑、暂不认为有关或不确定，`SymptomExposureLink` 保存选择。允许多个怀疑候选，也允许全部保持未判断。
 - 避雷分别按食物、食材、店铺聚合，保留总摄入次数、用户怀疑次数、有不适证据的记录数、原始记录入口和手动状态。沿用第 3.4 节中兼容的单次与至少两次的显示规则，以及少样本提示。采购店铺和食材分别统计。
 - 模型使用稳定 UUID，显示原始名称，搜索和聚合时归一化。用云端 XCTest 验证 SwiftData 关系、数组持久化和删除规则，尤其是模板与历史快照的独立性。
 
@@ -39,6 +39,8 @@
 
 ## 当前进展与接手步骤
 
-- 2026-11-22 初次检查时只有 V2 原始规格文件。Phase 0 已建立最小工程、单一空首页、构建脚本、工作流及交接文档。后续功能从各自的阶段开始。
-- Phase 0 云端验收待进行。用户指定的远端为 [loliruru/fooddiary-ios](https://github.com/loliruru/fooddiary-ios)。以 `git status --short --branch`、`git log -1 --oneline` 和 `git remote -v` 核对状态。推送 Phase 0 提交到 `main` 后，检查对应 SHA 的 Actions run，下载 artifact 并验证实际 IPA 内的应用包。
-- 云端通过后，在交接中记录 run URL、SHA、产物名和 Payload 检查结果。Phase 0 验收完毕并收到用户确认后，从 Phase 1 的静态导航和视觉框架开始。
+- 2026-11-22 完成 Phase 0。初始化时只有 V2 原始规格文件。已建立最小工程、单一空首页、构建脚本和工作流，并通过配置一致性、字符串目录 JSON、`bash -n` 和 `git diff --cached --check` 检查。V2 原文件校验值与初始化前一致。
+- 用户指定的远端为 [loliruru/fooddiary-ios](https://github.com/loliruru/fooddiary-ios)。Phase 0 工程提交 `f3df870d3e5ca65d66ea32da82b8705d041d4312` 已推送到 `main`，触发 [Actions run 45038468375](https://github.com/loliruru/fooddiary-ios/actions/runs/45038468375)，云端构建与上传成功。
+- 已下载 [Phase 0 artifact](https://github.com/loliruru/fooddiary-ios/actions/runs/45038468375/artifacts/14759999219) 并解包检查 `FoodDiary-unsigned.ipa`。确认含 `Payload/FoodDiary.app`、arm64 可执行文件、iOS 17.0 最低版本、正确 Bundle ID 和简体中文字符串；包内无签名资源和描述文件。IPA SHA-256 为 `d3b7c389ff573c5acf7422cee340042acf3afddca4feb580fcd38ddb63dfd420`。
+- 新会话先读 V2 第 12 节，运行 `git status --short --branch`、`git log -1 --oneline` 和 `git remote -v` 核对实际状态。若 Windows Git 提示本仓库所有权不一致，可用 `git -c safe.directory=C:/Dev/Codex/iPhone/FoodDiary` 运行对应命令。
+- Phase 1 待用户确认。确认后从静态导航、视觉框架和 App Icon 开始。后续阶段更新本节的完成范围、提交、云端 run、验收结果及待办。
