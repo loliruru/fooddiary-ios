@@ -24,7 +24,6 @@ struct HomeView: View {
             case .symptom: "heart.text.square"
             }
         }
-
     }
 
     let showSaved: Bool

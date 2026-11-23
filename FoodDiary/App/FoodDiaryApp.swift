@@ -28,6 +28,7 @@ struct FoodDiaryApp: App {
     }
 
     private func openStorage() {
+        guard container == nil else { return }
         do {
             container = try DiaryStore.openLocal()
             openingFailed = false

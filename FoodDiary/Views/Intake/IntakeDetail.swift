@@ -2,13 +2,14 @@ import SwiftData
 import SwiftUI
 
 struct IntakeRow: View {
+    @Environment(\.locale) private var locale
     let event: IntakeEvent
     let onRecordAdded: () -> Void
 
     private var subtitle: String? {
         if event.mealType == .homemade {
             let names = event.orderedIngredients.prefix(3).map(\.name)
-            return names.isEmpty ? nil : names.formatted(.list(type: .and))
+            return names.isEmpty ? nil : names.formatted(.list(type: .and).locale(locale))
         }
         return event.merchantName ?? event.brandName
     }
@@ -58,6 +59,7 @@ struct IntakeRow: View {
 struct IntakeDetail: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.locale) private var locale
     @State private var editing = false
     @State private var copying = false
     @State private var confirmDelete = false
@@ -108,7 +110,7 @@ struct IntakeDetail: View {
             if event.note != nil || !event.tags.isEmpty {
                 DiaryCard {
                     VStack(alignment: .leading, spacing: 12) {
-                        value(event.tags.isEmpty ? nil : event.tags.formatted(.list(type: .and)), title: "intake.tags")
+                        value(event.tags.isEmpty ? nil : event.tags.formatted(.list(type: .and).locale(locale)), title: "intake.tags")
                         value(event.note, title: "intake.note")
                     }
                 }

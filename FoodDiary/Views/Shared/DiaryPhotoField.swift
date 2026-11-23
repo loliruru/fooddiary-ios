@@ -1,5 +1,17 @@
+import CoreTransferable
 import PhotosUI
 import SwiftUI
+import UniformTypeIdentifiers
+
+private struct ImportedDiaryPhoto: Transferable {
+    let jpeg: Data
+
+    static var transferRepresentation: some TransferRepresentation {
+        DataRepresentation(importedContentType: .image) { data in
+            try ImportedDiaryPhoto(jpeg: DiaryPhotos.jpeg(from: data))
+        }
+    }
+}
 
 struct DiaryPhotoField: View {
     var previousPath: String?
@@ -46,24 +58,15 @@ struct DiaryPhotoField: View {
                     }
                 }
                 do {
-                    guard let original = try await item.loadTransferable(type: Data.self) else {
+                    guard let imported = try await item.loadTransferable(type: ImportedDiaryPhoto.self) else {
                         throw CocoaError(.fileReadCorruptFile)
                     }
                     try Task.checkCancellation()
-                    let data = try await Task.detached(priority: .userInitiated) {
-                        try DiaryPhotos.jpeg(from: original)
-                    }.value
-                    try Task.checkCancellation()
-                    photo = .replace(data)
+                    photo = .replace(imported.jpeg)
                 } catch {
                     if !Task.isCancelled { importFailed = true }
                 }
             }
-        }
-        .onDisappear {
-            importTask?.cancel()
-            isLoading = false
-            selection = nil
         }
         .alert("photo.error", isPresented: $importFailed) {
             Button("common.done", role: .cancel) {}
