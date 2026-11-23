@@ -188,7 +188,7 @@ struct IntakeDetail: View {
             IntakeEditor(event: event, copying: true, onSave: onRecordAdded)
         }
         .sheet(isPresented: $addingSymptom) {
-            SymptomEditor(suggestedMeal: event, onSave: onRecordAdded)
+            SymptomEditor(suggestedMeal: event)
         }
         .confirmationDialog("intake.confirmDelete", isPresented: $confirmDelete, titleVisibility: .visible) {
             Button("common.delete", role: .destructive, action: delete)

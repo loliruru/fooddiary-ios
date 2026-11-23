@@ -52,7 +52,11 @@ struct HistoryView: View {
             }
         }
         .sheet(item: $creating) { action in
-            action.editor(onSave: onRecordAdded)
+            if action == .symptom {
+                SymptomEditor()
+            } else {
+                action.editor(onSave: onRecordAdded)
+            }
         }
     }
 
