@@ -110,17 +110,20 @@ struct IntakeEditor: View {
                     }
                     if editing == nil {
                         Section {
-                            Button(action: saveCombo) {
-                                Label("combo.save", systemImage: "plus.square.on.square")
-                                    .frame(minHeight: 44)
-                            }
-                            .buttonStyle(.borderless)
-                            .disabled(!draft.canSave || comboSaved)
-                        } footer: {
                             if comboSaved {
                                 Label("combo.saved", systemImage: "checkmark.circle.fill")
                                     .foregroundStyle(DiaryTheme.accent)
+                                    .frame(minHeight: 44)
                             } else {
+                                Button(action: saveCombo) {
+                                    Label("combo.save", systemImage: "plus.square.on.square")
+                                        .frame(minHeight: 44)
+                                }
+                                .buttonStyle(.borderless)
+                                .disabled(!draft.canSave)
+                            }
+                        } footer: {
+                            if !comboSaved {
                                 Text("combo.saveHint")
                             }
                         }

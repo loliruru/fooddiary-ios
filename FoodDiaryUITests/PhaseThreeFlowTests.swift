@@ -10,7 +10,7 @@ final class PhaseThreeFlowTests: XCTestCase {
         add.tap()
 
         let diarrhea = app.switches["腹泻"]
-        let count = app.descendants(matching: .any)
+        let count = app.collectionViews.descendants(matching: .any)
             .matching(NSPredicate(format: "identifier == %@ OR label BEGINSWITH %@", "symptom.diarrheaCount", "腹泻次数"))
             .firstMatch
         XCTAssertTrue(diarrhea.waitForExistence(timeout: 5))
@@ -36,7 +36,7 @@ final class PhaseThreeFlowTests: XCTestCase {
         XCTAssertTrue(count.exists)
         diarrhea.coordinate(withNormalizedOffset: CGVector(dx: 0.92, dy: 0.5)).tap()
         XCTAssertEqual(diarrhea.value as? String, "0", app.debugDescription)
-        XCTAssertTrue(count.waitForNonExistence(timeout: 5))
+        XCTAssertTrue(count.waitForNonExistence(timeout: 5), app.debugDescription)
         app.navigationBars.buttons["保存"].tap()
         let delete = app.buttons["删除身体记录"]
         XCTAssertTrue(delete.waitForExistence(timeout: 5))
@@ -70,7 +70,7 @@ final class PhaseThreeFlowTests: XCTestCase {
         XCTAssertTrue(saveCombo.isHittable)
         XCTAssertTrue(saveCombo.isEnabled, app.debugDescription)
         saveCombo.tap()
-        XCTAssertTrue(app.staticTexts["已保存为 Combo"].waitForExistence(timeout: 5), app.debugDescription)
+        XCTAssertTrue(saveCombo.waitForNonExistence(timeout: 5), app.debugDescription)
         app.navigationBars.buttons["取消"].tap()
 
         addMeal.tap()
