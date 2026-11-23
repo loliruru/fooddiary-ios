@@ -21,7 +21,7 @@ enum DiaryName {
     }
 }
 
-struct IngredientDraft: Identifiable {
+struct IngredientDraft: Equatable, Identifiable {
     let id: UUID
     var name: String
     var purchasePlaceName: String

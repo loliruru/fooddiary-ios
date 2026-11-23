@@ -35,6 +35,7 @@ struct IntakeEditor: View {
     @State private var noticeTitle: LocalizedStringKey = "common.saveError"
     @State private var loadingPhoto = false
     @State private var choosingCombo = false
+    @State private var comboSaved = false
 
     private let editing: IntakeEvent?
     private let showsLatest: Bool
@@ -113,9 +114,15 @@ struct IntakeEditor: View {
                                 Label("combo.save", systemImage: "plus.square.on.square")
                                     .frame(minHeight: 44)
                             }
-                            .disabled(!draft.canSave)
+                            .buttonStyle(.borderless)
+                            .disabled(!draft.canSave || comboSaved)
                         } footer: {
-                            Text("combo.saveHint")
+                            if comboSaved {
+                                Label("combo.saved", systemImage: "checkmark.circle.fill")
+                                    .foregroundStyle(DiaryTheme.accent)
+                            } else {
+                                Text("combo.saveHint")
+                            }
                         }
                     }
                 }
@@ -134,6 +141,8 @@ struct IntakeEditor: View {
             .background(DiaryTheme.canvas)
             .navigationTitle(editing == nil ? draft.intakeType.addTitle : "intake.edit")
             .navigationBarTitleDisplayMode(.inline)
+            .onChange(of: draft.displayName) { _, _ in comboSaved = false }
+            .onChange(of: draft.ingredients) { _, _ in comboSaved = false }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("common.cancel") { dismiss() }
@@ -310,7 +319,7 @@ struct IntakeEditor: View {
     private func saveCombo() {
         do {
             try DiaryStore(context: context).saveCombo(name: draft.displayName, ingredients: draft.ingredients)
-            showNotice("combo.saved")
+            comboSaved = true
         } catch {
             showNotice("common.saveError")
         }

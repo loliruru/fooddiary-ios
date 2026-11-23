@@ -1,3 +1,4 @@
+import CoreGraphics
 import XCTest
 
 final class PhaseThreeFlowTests: XCTestCase {
@@ -9,11 +10,14 @@ final class PhaseThreeFlowTests: XCTestCase {
         add.tap()
 
         let diarrhea = app.switches["腹泻"]
-        let count = app.descendants(matching: .any)["symptom.diarrheaCount"].firstMatch
+        let count = app.descendants(matching: .any)
+            .matching(NSPredicate(format: "identifier == %@ OR label BEGINSWITH %@", "symptom.diarrheaCount", "腹泻次数"))
+            .firstMatch
         XCTAssertTrue(diarrhea.waitForExistence(timeout: 5))
         XCTAssertFalse(count.exists)
-        diarrhea.tap()
-        XCTAssertTrue(count.waitForExistence(timeout: 5))
+        diarrhea.coordinate(withNormalizedOffset: CGVector(dx: 0.92, dy: 0.5)).tap()
+        XCTAssertEqual(diarrhea.value as? String, "1", app.debugDescription)
+        XCTAssertTrue(count.waitForExistence(timeout: 5), app.debugDescription)
         app.navigationBars.buttons["保存"].tap()
 
         app.terminate()
@@ -33,7 +37,8 @@ final class PhaseThreeFlowTests: XCTestCase {
         app.navigationBars.buttons["编辑"].tap()
         XCTAssertTrue(diarrhea.waitForExistence(timeout: 5))
         XCTAssertTrue(count.exists)
-        diarrhea.tap()
+        diarrhea.coordinate(withNormalizedOffset: CGVector(dx: 0.92, dy: 0.5)).tap()
+        XCTAssertEqual(diarrhea.value as? String, "0", app.debugDescription)
         XCTAssertTrue(count.waitForNonExistence(timeout: 5))
         app.navigationBars.buttons["保存"].tap()
         let delete = app.buttons["删除身体记录"]
@@ -46,7 +51,7 @@ final class PhaseThreeFlowTests: XCTestCase {
     func testCreateApplyEditAndDeleteComboFromApp() {
         continueAfterFailure = false
         let app = launchDiary()
-        let name = "Combo (UUID().uuidString.prefix(8))"
+        let name = "Combo \(UUID().uuidString.prefix(8))"
         let nameField = app.textFields["餐名或菜品名称"]
         let addMeal = app.buttons["记录一餐"]
         XCTAssertTrue(addMeal.waitForExistence(timeout: 10))
@@ -60,10 +65,9 @@ final class PhaseThreeFlowTests: XCTestCase {
         let saveCombo = app.buttons["保存为 Combo"]
         if !saveCombo.isHittable { app.swipeUp() }
         XCTAssertTrue(saveCombo.isHittable)
+        XCTAssertTrue(saveCombo.isEnabled, app.debugDescription)
         saveCombo.tap()
-        let saved = app.alerts["已保存为 Combo"]
-        XCTAssertTrue(saved.waitForExistence(timeout: 5))
-        saved.buttons["完成"].tap()
+        XCTAssertTrue(app.staticTexts["已保存为 Combo"].waitForExistence(timeout: 5), app.debugDescription)
         app.navigationBars.buttons["取消"].tap()
 
         addMeal.tap()
@@ -73,7 +77,7 @@ final class PhaseThreeFlowTests: XCTestCase {
         XCTAssertTrue(use.waitForExistence(timeout: 5))
         use.tap()
         let combo = app.buttons.matching(identifier: "combo.record").firstMatch
-        XCTAssertTrue(combo.waitForExistence(timeout: 5))
+        XCTAssertTrue(combo.waitForExistence(timeout: 5), app.debugDescription)
         combo.tap()
         XCTAssertTrue(nameField.waitForExistence(timeout: 5))
         XCTAssertEqual(nameField.value as? String, name)
@@ -89,7 +93,9 @@ final class PhaseThreeFlowTests: XCTestCase {
         nameField.tap()
         nameField.typeText(" Test")
         app.navigationBars.buttons["保存"].tap()
-        XCTAssertTrue(app.staticTexts[name + " Test"].waitForExistence(timeout: 5))
+        let renamed = app.buttons.matching(identifier: "combo.record")
+            .matching(NSPredicate(format: "label CONTAINS %@", name + " Test")).firstMatch
+        XCTAssertTrue(renamed.waitForExistence(timeout: 5), app.debugDescription)
 
         combo.tap()
         let deleteCombo = app.buttons["删除 Combo"]

@@ -39,14 +39,14 @@ struct SymptomEditor: View {
                             Text(symptom.title)
                         }
                         .frame(minHeight: 44)
-                    }
-                    if draft.symptoms.contains(.diarrhea) {
-                        Stepper(value: $draft.diarrheaCount, in: 0...Int.max) {
-                            LabeledContent("symptom.diarrheaCount") {
-                                Text(draft.diarrheaCount, format: .number)
+                        if symptom == .diarrhea && draft.symptoms.contains(.diarrhea) {
+                            Stepper(value: $draft.diarrheaCount, in: 0...Int.max) {
+                                LabeledContent("symptom.diarrheaCount") {
+                                    Text(draft.diarrheaCount, format: .number)
+                                }
                             }
+                            .accessibilityIdentifier("symptom.diarrheaCount")
                         }
-                        .accessibilityIdentifier("symptom.diarrheaCount")
                     }
                 }
                 DisclosureGroup("symptom.more") {
