@@ -21,6 +21,13 @@ struct SettingsView: View {
                 }
             }
 
+            NavigationLink {
+                MealCombosView()
+            } label: {
+                Label("combo.title", systemImage: "square.on.square")
+            }
+            .buttonStyle(DiaryButtonStyle(kind: .secondary))
+
             DiaryCard {
                 DiaryEmptyState(
                     title: "settings.privacy",

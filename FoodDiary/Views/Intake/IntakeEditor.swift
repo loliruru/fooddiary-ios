@@ -25,14 +25,16 @@ struct IntakeEditor: View {
     @Query(sort: \IntakeEvent.eventTime, order: .reverse) private var events: [IntakeEvent]
     @Query private var foods: [SavedFood]
     @Query private var places: [SavedPlace]
+    @Query(sort: \MealCombo.updatedAt, order: .reverse) private var combos: [MealCombo]
     @State private var draft: IntakeDraft
     @State private var tag = ""
     @State private var lookup: NameField?
     @State private var pendingFavorite: FavoriteRequest?
     @State private var showFavoriteConfirmation = false
-    @State private var showError = false
-    @State private var errorTitle: LocalizedStringKey = "common.saveError"
+    @State private var noticePresented = false
+    @State private var noticeTitle: LocalizedStringKey = "common.saveError"
     @State private var loadingPhoto = false
+    @State private var choosingCombo = false
 
     private let editing: IntakeEvent?
     private let showsLatest: Bool
@@ -77,6 +79,17 @@ struct IntakeEditor: View {
                     mealChoices
                 }
 
+                if draft.isHomemade && editing == nil && !combos.isEmpty {
+                    Section {
+                        Button {
+                            choosingCombo = true
+                        } label: {
+                            Label("combo.use", systemImage: "square.on.square")
+                                .frame(minHeight: 44)
+                        }
+                    }
+                }
+
                 Section("intake.basics") {
                     nameField(.food, title: draft.intakeType == .snack ? "intake.snackName" : "intake.mealName")
                     DatePicker("intake.time", selection: $draft.eventTime)
@@ -91,7 +104,20 @@ struct IntakeEditor: View {
                 }
 
                 if draft.isHomemade {
-                    ingredientFields
+                    IngredientFields(ingredients: $draft.ingredients) { field, id, _ in
+                        nameField(field == .name ? .ingredient(id) : .source(id), title: field.title)
+                    }
+                    if editing == nil {
+                        Section {
+                            Button(action: saveCombo) {
+                                Label("combo.save", systemImage: "plus.square.on.square")
+                                    .frame(minHeight: 44)
+                            }
+                            .disabled(!draft.canSave)
+                        } footer: {
+                            Text("combo.saveHint")
+                        }
+                    }
                 }
 
                 Section("photo.title") {
@@ -127,6 +153,15 @@ struct IntakeEditor: View {
                     binding(for: field).wrappedValue = value
                 }
             }
+            .sheet(isPresented: $choosingCombo) {
+                ComboPicker(combos: combos) { combo in
+                    do {
+                        try draft.applyCombo(combo)
+                    } catch {
+                        showNotice("combo.openError")
+                    }
+                }
+            }
             .confirmationDialog(
                 pendingFavorite?.kind.addTitle ?? "favorites.title", isPresented: $showFavoriteConfirmation,
                 titleVisibility: .visible, presenting: pendingFavorite
@@ -136,7 +171,7 @@ struct IntakeEditor: View {
             } message: { request in
                 Text(request.name)
             }
-            .alert(errorTitle, isPresented: $showError) {
+            .alert(noticeTitle, isPresented: $noticePresented) {
                 Button("common.done", role: .cancel) {}
             }
         }
@@ -168,43 +203,6 @@ struct IntakeEditor: View {
                     .accessibilityAddTraits(draft.mealType == type ? .isSelected : [])
                 }
             }
-        }
-    }
-
-    private var ingredientFields: some View {
-        Section {
-            ForEach($draft.ingredients) { $row in
-                VStack(alignment: .leading, spacing: 9) {
-                    nameField(.ingredient(row.id), title: "intake.ingredientName")
-                    if !row.isEmpty && DiaryName.text(row.name) == nil {
-                        Text("intake.ingredientRequired")
-                            .font(.footnote)
-                            .foregroundStyle(DiaryTheme.secondaryText)
-                    }
-                    nameField(.source(row.id), title: "intake.ingredientSource")
-                    TextField("intake.amount", text: $row.amountText)
-                        .frame(minHeight: 44)
-                    TextField("intake.note", text: $row.note, axis: .vertical)
-                        .frame(minHeight: 44)
-                    Button(role: .destructive) {
-                        draft.ingredients.removeAll { $0.id == row.id }
-                    } label: {
-                        Label("intake.removeIngredient", systemImage: "minus.circle")
-                            .frame(minHeight: 44)
-                    }
-                    .buttonStyle(.borderless)
-                }
-            }
-            Button {
-                draft.ingredients.append(IngredientDraft())
-            } label: {
-                Label("intake.addIngredient", systemImage: "plus.circle")
-                    .frame(minHeight: 44)
-            }
-        } header: {
-            Text("intake.ingredients")
-        } footer: {
-            Text("intake.ingredientHint")
         }
     }
 
@@ -303,11 +301,18 @@ struct IntakeEditor: View {
         do {
             try DiaryStore(context: context).saveFavorite(request.kind, name: request.name)
         } catch DiaryStore.InputError.duplicateFavorite {
-            errorTitle = "favorites.duplicate"
-            showError = true
+            showNotice("favorites.duplicate")
         } catch {
-            errorTitle = "common.saveError"
-            showError = true
+            showNotice("common.saveError")
+        }
+    }
+
+    private func saveCombo() {
+        do {
+            try DiaryStore(context: context).saveCombo(name: draft.displayName, ingredients: draft.ingredients)
+            showNotice("combo.saved")
+        } catch {
+            showNotice("common.saveError")
         }
     }
 
@@ -318,8 +323,12 @@ struct IntakeEditor: View {
             dismiss()
             onSave()
         } catch {
-            errorTitle = "common.saveError"
-            showError = true
+            showNotice("common.saveError")
         }
+    }
+
+    private func showNotice(_ title: LocalizedStringKey) {
+        noticeTitle = title
+        noticePresented = true
     }
 }

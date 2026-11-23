@@ -39,6 +39,8 @@ struct IngredientDraft: Identifiable {
     var isEmpty: Bool {
         [name, purchasePlaceName, amountText, note].allSatisfy { DiaryName.text($0) == nil }
     }
+
+    var isValid: Bool { isEmpty || DiaryName.text(name) != nil }
 }
 
 struct IntakeDraft {
@@ -78,8 +80,12 @@ struct IntakeDraft {
     var isHomemade: Bool { intakeType == .meal && mealType == .homemade }
 
     var canSave: Bool {
-        DiaryName.text(displayName) != nil && (!isHomemade || ingredients.allSatisfy {
-            $0.isEmpty || DiaryName.text($0.name) != nil
-        })
+        DiaryName.text(displayName) != nil && (!isHomemade || ingredients.allSatisfy(\.isValid))
+    }
+
+    mutating func applyCombo(_ combo: MealCombo) throws {
+        let rows = try combo.ingredientDrafts()
+        displayName = combo.name
+        ingredients = rows
     }
 }

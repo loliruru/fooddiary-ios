@@ -3,7 +3,9 @@ import SwiftUI
 
 struct IntakeRow: View {
     @Environment(\.locale) private var locale
+    @State private var addingSymptom = false
     let event: IntakeEvent
+    var showFeelingPrompt = false
     let onRecordAdded: () -> Void
 
     private var subtitle: String? {
@@ -15,6 +17,26 @@ struct IntakeRow: View {
     }
 
     var body: some View {
+        VStack(alignment: .trailing, spacing: 2) {
+            recordLink
+            if showFeelingPrompt && event.intakeType == .meal && event.latestFeeling == nil {
+                Button {
+                    addingSymptom = true
+                } label: {
+                    Label("feeling.add", systemImage: "heart.text.square")
+                        .font(.subheadline.weight(.medium))
+                        .frame(minHeight: 44)
+                }
+                .buttonStyle(.borderless)
+                .accessibilityHint(Text(event.displayName))
+            }
+        }
+        .sheet(isPresented: $addingSymptom) {
+            SymptomEditor(suggestedMeal: event, onSave: onRecordAdded)
+        }
+    }
+
+    private var recordLink: some View {
         NavigationLink {
             IntakeDetail(event: event, onRecordAdded: onRecordAdded)
         } label: {
@@ -36,6 +58,11 @@ struct IntakeRow: View {
                                 .font(.subheadline)
                                 .foregroundStyle(DiaryTheme.secondaryText)
                                 .lineLimit(2)
+                        }
+                        if event.intakeType == .meal {
+                            Text(event.latestFeeling?.title ?? "feeling.unknown")
+                                .font(.footnote)
+                                .foregroundStyle(DiaryTheme.secondaryText)
                         }
                         Text(event.eventTime, format: .dateTime.hour().minute())
                             .font(.footnote)
@@ -62,6 +89,7 @@ struct IntakeDetail: View {
     @Environment(\.locale) private var locale
     @State private var editing = false
     @State private var copying = false
+    @State private var addingSymptom = false
     @State private var confirmDelete = false
     @State private var showError = false
 
@@ -116,6 +144,25 @@ struct IntakeDetail: View {
                 }
             }
 
+            if event.intakeType == .meal {
+                VStack(alignment: .leading, spacing: 10) {
+                    if !event.linkedSymptoms.isEmpty {
+                        Text("symptom.linkedEvents")
+                            .font(.headline)
+                            .accessibilityAddTraits(.isHeader)
+                        ForEach(event.linkedSymptoms.sorted { $0.symptomTime > $1.symptomTime }) { symptom in
+                            SymptomRow(event: symptom, showsDate: true)
+                        }
+                    }
+                    Button {
+                        addingSymptom = true
+                    } label: {
+                        Label("home.action.symptom", systemImage: "heart.text.square")
+                    }
+                    .buttonStyle(DiaryButtonStyle(kind: .secondary))
+                }
+            }
+
             Button {
                 copying = true
             } label: {
@@ -139,6 +186,9 @@ struct IntakeDetail: View {
         }
         .sheet(isPresented: $copying) {
             IntakeEditor(event: event, copying: true, onSave: onRecordAdded)
+        }
+        .sheet(isPresented: $addingSymptom) {
+            SymptomEditor(suggestedMeal: event, onSave: onRecordAdded)
         }
         .confirmationDialog("intake.confirmDelete", isPresented: $confirmDelete, titleVisibility: .visible) {
             Button("common.delete", role: .destructive, action: delete)

@@ -67,6 +67,138 @@
         }
       }
     },
+    "combo.confirmDelete": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "删除这个 Combo？"
+          }
+        }
+      }
+    },
+    "combo.delete": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "删除 Combo"
+          }
+        }
+      }
+    },
+    "combo.edit": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "编辑 Combo"
+          }
+        }
+      }
+    },
+    "combo.empty": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "还没有 Combo"
+          }
+        }
+      }
+    },
+    "combo.emptyHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在记录自制餐时，点「保存为 Combo」就能下次复用。"
+          }
+        }
+      }
+    },
+    "combo.openError": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无法读取 Combo"
+          }
+        }
+      }
+    },
+    "combo.save": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存为 Combo"
+          }
+        }
+      }
+    },
+    "combo.saveHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "模板会立即保存，本次餐食仍可继续编辑。"
+          }
+        }
+      }
+    },
+    "combo.saved": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已保存为 Combo"
+          }
+        }
+      }
+    },
+    "combo.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自制餐 Combo"
+          }
+        }
+      }
+    },
+    "combo.use": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "套用 Combo"
+          }
+        }
+      }
+    },
+    "combo.useHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "套用后会替换本次的餐名和食材。"
+          }
+        }
+      }
+    },
     "common.add": {
       "extractionState": "manual",
       "localizations": {
@@ -173,6 +305,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "保存失败，请重试。"
+          }
+        }
+      }
+    },
+    "common.unspecified": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未填写"
           }
         }
       }
@@ -353,13 +496,79 @@
         }
       }
     },
+    "feeling.add": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "补充感受"
+          }
+        }
+      }
+    },
+    "feeling.bad": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "不舒服"
+          }
+        }
+      }
+    },
+    "feeling.good": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "舒服"
+          }
+        }
+      }
+    },
+    "feeling.neutral": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一般"
+          }
+        }
+      }
+    },
+    "feeling.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "身体感受"
+          }
+        }
+      }
+    },
+    "feeling.unknown": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "感受未填写"
+          }
+        }
+      }
+    },
     "history.empty.message": {
       "extractionState": "manual",
       "localizations": {
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "记录一餐或一份零食后，可以在这里按日期查看和编辑。"
+            "value": "记录饮食或身体感受后，可以在这里按日期查看和编辑。"
           }
         }
       }
@@ -437,28 +646,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "条记录"
-          }
-        }
-      }
-    },
-    "home.preview.symptom": {
-      "extractionState": "manual",
-      "localizations": {
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "身体感受录入开放后，可以在这里记下不适开始的时间和症状。"
-          }
-        }
-      }
-    },
-    "home.preview.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "录入将在后续开放"
           }
         }
       }
@@ -1031,6 +1218,347 @@
           "stringUnit": {
             "state": "translated",
             "value": "正在打开本机记录"
+          }
+        }
+      }
+    },
+    "symptom.abdominalPain": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "腹痛"
+          }
+        }
+      }
+    },
+    "symptom.bloating": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "腹胀"
+          }
+        }
+      }
+    },
+    "symptom.confirmDelete": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "删除这条身体记录？"
+          }
+        }
+      }
+    },
+    "symptom.delete": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "删除身体记录"
+          }
+        }
+      }
+    },
+    "symptom.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "身体记录"
+          }
+        }
+      }
+    },
+    "symptom.diarrhea": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "腹泻"
+          }
+        }
+      }
+    },
+    "symptom.diarrheaCount": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "腹泻次数"
+          }
+        }
+      }
+    },
+    "symptom.duration": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "持续时间"
+          }
+        }
+      }
+    },
+    "symptom.edit": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "编辑身体记录"
+          }
+        }
+      }
+    },
+    "symptom.linkSuggested": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "关联这顿餐"
+          }
+        }
+      }
+    },
+    "symptom.linkedEvents": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "手动关联的身体记录"
+          }
+        }
+      }
+    },
+    "symptom.linkedMeal": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "手动关联餐食"
+          }
+        }
+      }
+    },
+    "symptom.list": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "症状"
+          }
+        }
+      }
+    },
+    "symptom.mild": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "轻微"
+          }
+        }
+      }
+    },
+    "symptom.moderate": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "中等"
+          }
+        }
+      }
+    },
+    "symptom.more": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "更多信息"
+          }
+        }
+      }
+    },
+    "symptom.nausea": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "恶心"
+          }
+        }
+      }
+    },
+    "symptom.noLinkedMeal": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未关联"
+          }
+        }
+      }
+    },
+    "symptom.oneToThree": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1–3 小时"
+          }
+        }
+      }
+    },
+    "symptom.other": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "其他"
+          }
+        }
+      }
+    },
+    "symptom.overDay": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "超过 24 小时"
+          }
+        }
+      }
+    },
+    "symptom.recorded": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "填写时间"
+          }
+        }
+      }
+    },
+    "symptom.reflux": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "反酸"
+          }
+        }
+      }
+    },
+    "symptom.severe": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "严重"
+          }
+        }
+      }
+    },
+    "symptom.severity": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "严重程度"
+          }
+        }
+      }
+    },
+    "symptom.sixToTwentyFour": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "6–24 小时"
+          }
+        }
+      }
+    },
+    "symptom.started": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "开始时间"
+          }
+        }
+      }
+    },
+    "symptom.threeToSix": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3–6 小时"
+          }
+        }
+      }
+    },
+    "symptom.underHour": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "少于 1 小时"
+          }
+        }
+      }
+    },
+    "symptom.unknownDuration": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "不清楚"
+          }
+        }
+      }
+    },
+    "symptom.vomiting": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "呕吐"
           }
         }
       }

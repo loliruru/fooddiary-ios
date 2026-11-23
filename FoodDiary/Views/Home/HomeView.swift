@@ -2,42 +2,27 @@ import SwiftData
 import SwiftUI
 
 struct HomeView: View {
-    private enum QuickAction: String, Identifiable {
-        case meal
-        case snack
-        case symptom
-
-        var id: Self { self }
-
-        var title: LocalizedStringKey {
-            switch self {
-            case .meal: "home.action.meal"
-            case .snack: "home.action.snack"
-            case .symptom: "home.action.symptom"
-            }
-        }
-
-        var symbol: String {
-            switch self {
-            case .meal: "plus.circle.fill"
-            case .snack: "takeoutbag.and.cup.and.straw"
-            case .symptom: "heart.text.square"
-            }
-        }
-    }
-
     let showSaved: Bool
     let onRecordAdded: () -> Void
 
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.dynamicTypeSize) private var typeSize
     @Query(sort: \IntakeEvent.eventTime, order: .reverse) private var events: [IntakeEvent]
-    @State private var selectedAction: QuickAction?
+    @Query private var symptoms: [SymptomEvent]
+    @State private var selectedAction: RecordAction?
     @State private var today = Date.now
 
     private var todayEvents: [IntakeEvent] {
         let calendar = Calendar.autoupdatingCurrent
         return events.filter { calendar.isDate($0.eventTime, inSameDayAs: today) }
+    }
+
+    private var todayEntries: [TimelineEntry] {
+        let calendar = Calendar.autoupdatingCurrent
+        return TimelineEntry.ordered(
+            intakes: todayEvents,
+            symptoms: symptoms.filter { calendar.isDate($0.symptomTime, inSameDayAs: today) }
+        )
     }
 
     var body: some View {
@@ -73,10 +58,10 @@ struct HomeView: View {
                     actionButton(for: .symptom, kind: .secondary)
                 }
             }
-            if !todayEvents.isEmpty {
+            if !todayEntries.isEmpty {
                 LazyVStack(spacing: 10) {
-                    ForEach(todayEvents) { event in
-                        IntakeRow(event: event, onRecordAdded: onRecordAdded)
+                    ForEach(todayEntries) { entry in
+                        entry.row(onRecordAdded: onRecordAdded, showFeelingPrompt: true)
                     }
                 }
             }
@@ -91,32 +76,7 @@ struct HomeView: View {
             today = .now
         }
         .sheet(item: $selectedAction) { action in
-            switch action {
-            case .meal:
-                IntakeEditor(type: .meal, onSave: onRecordAdded)
-            case .snack:
-                IntakeEditor(type: .snack, onSave: onRecordAdded)
-            case .symptom:
-                NavigationStack {
-                    DiaryPage {
-                        DiaryCard {
-                            DiaryEmptyState(
-                                title: "home.preview.title",
-                                message: "home.preview.symptom",
-                                symbol: action.symbol
-                            )
-                        }
-                    }
-                    .navigationTitle(action.title)
-                    .navigationBarTitleDisplayMode(.inline)
-                    .toolbar {
-                        ToolbarItem(placement: .confirmationAction) {
-                            Button("common.done") { selectedAction = nil }
-                        }
-                    }
-                }
-                .tint(DiaryTheme.accent)
-            }
+            action.editor(onSave: onRecordAdded)
         }
     }
 
@@ -161,7 +121,7 @@ struct HomeView: View {
         }
     }
 
-    private func actionButton(for action: QuickAction, kind: DiaryButtonStyle.Kind) -> some View {
+    private func actionButton(for action: RecordAction, kind: DiaryButtonStyle.Kind) -> some View {
         Button {
             selectedAction = action
         } label: {

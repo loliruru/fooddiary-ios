@@ -12,7 +12,10 @@ struct DiaryStore {
     var photos = DiaryPhotos.local
 
     static func makeContainer(at storeURL: URL) throws -> ModelContainer {
-        let schema = Schema([IntakeEvent.self, IngredientItem.self, SavedPlace.self, SavedFood.self])
+        let schema = Schema([
+            IntakeEvent.self, IngredientItem.self, SavedPlace.self, SavedFood.self,
+            SymptomEvent.self, MealCombo.self
+        ])
         let config = ModelConfiguration(schema: schema, url: storeURL, cloudKitDatabase: .none)
         return try ModelContainer(for: schema, configurations: [config])
     }
@@ -55,6 +58,51 @@ struct DiaryStore {
         try commitPhoto(.remove, previous: event.photoPath) { _ in
             context.delete(event)
         }
+    }
+
+    @discardableResult
+    func saveSymptom(
+        _ draft: SymptomDraft, editing existing: SymptomEvent? = nil, now: Date = .now
+    ) throws -> SymptomEvent {
+        let event = existing ?? SymptomEvent(symptomTime: draft.symptomTime, recordedAt: now)
+        try commit {
+            if existing == nil { context.insert(event) }
+            event.symptomTime = draft.symptomTime
+            event.symptomCodes = Symptom.allCases.filter { draft.symptoms.contains($0) }.map(\.rawValue)
+            event.diarrheaCount = draft.symptoms.contains(.diarrhea) ? max(0, draft.diarrheaCount) : 0
+            event.feelingCode = draft.feeling?.rawValue
+            event.severityCode = draft.severity?.rawValue
+            event.durationCode = draft.duration?.rawValue
+            event.note = DiaryName.text(draft.note)
+            event.linkedMeal = draft.linkedMeal
+        }
+        return event
+    }
+
+    func deleteSymptom(_ event: SymptomEvent) throws {
+        try commit { context.delete(event) }
+    }
+
+    @discardableResult
+    func saveCombo(
+        name: String, ingredients: [IngredientDraft], editing existing: MealCombo? = nil, now: Date = .now
+    ) throws -> MealCombo {
+        guard let name = DiaryName.text(name), ingredients.allSatisfy(\.isValid) else {
+            throw InputError.invalidName
+        }
+        let data = try JSONEncoder().encode(ingredients.compactMap(ComboIngredient.init(draft:)))
+        let combo = existing ?? MealCombo(name: name, ingredientsData: data, now: now)
+        try commit {
+            if existing == nil { context.insert(combo) }
+            combo.name = name
+            combo.ingredientsData = data
+            combo.updatedAt = now
+        }
+        return combo
+    }
+
+    func deleteCombo(_ combo: MealCombo) throws {
+        try commit { context.delete(combo) }
     }
 
     func saveFavorite(

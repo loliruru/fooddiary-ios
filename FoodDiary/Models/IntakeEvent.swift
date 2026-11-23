@@ -30,10 +30,15 @@ final class IntakeEvent {
     var updatedAt: Date
     @Relationship(deleteRule: .cascade, inverse: \IngredientItem.intakeEvent)
     var ingredients: [IngredientItem] = []
+    @Relationship(deleteRule: .nullify, inverse: \SymptomEvent.linkedMeal)
+    var linkedSymptoms: [SymptomEvent] = []
 
     var intakeType: IntakeType { IntakeType(rawValue: intakeTypeRaw) ?? .meal }
     var mealType: MealType? { mealTypeRaw.flatMap(MealType.init(rawValue:)) }
     var orderedIngredients: [IngredientItem] { ingredients.sorted { $0.position < $1.position } }
+    var latestFeeling: BodyFeeling? {
+        linkedSymptoms.sorted { $0.symptomTime > $1.symptomTime }.compactMap(\.feeling).first
+    }
 
     init(intakeType: IntakeType, eventTime: Date, displayName: String, now: Date) {
         id = UUID()
