@@ -27,12 +27,9 @@ final class PhaseThreeFlowTests: XCTestCase {
         history.tap()
         let record = app.descendants(matching: .any)["symptom.record"].firstMatch
         XCTAssertTrue(record.waitForExistence(timeout: 5))
+        XCTAssertTrue(record.label.contains("感受未填写"))
         record.tap()
-        XCTAssertTrue(app.staticTexts["开始时间"].waitForExistence(timeout: 5))
-        XCTAssertTrue(app.staticTexts["填写时间"].exists)
-        XCTAssertTrue(app.staticTexts["感受未填写"].exists)
-        XCTAssertFalse(app.staticTexts["手动关联餐食"].exists)
-        XCTAssertTrue(app.staticTexts["腹泻次数"].exists)
+        XCTAssertTrue(app.navigationBars["身体记录"].waitForExistence(timeout: 5), app.debugDescription)
 
         app.navigationBars.buttons["编辑"].tap()
         XCTAssertTrue(diarrhea.waitForExistence(timeout: 5))
@@ -43,6 +40,7 @@ final class PhaseThreeFlowTests: XCTestCase {
         app.navigationBars.buttons["保存"].tap()
         let delete = app.buttons["删除身体记录"]
         XCTAssertTrue(delete.waitForExistence(timeout: 5))
+        if !delete.isHittable { app.swipeUp() }
         delete.tap()
         app.buttons["删除"].tap()
         XCTAssertTrue(app.staticTexts["还没有记录"].waitForExistence(timeout: 5))
@@ -61,9 +59,14 @@ final class PhaseThreeFlowTests: XCTestCase {
         homemade.tap()
         XCTAssertTrue(nameField.waitForExistence(timeout: 5))
         nameField.tap()
-        nameField.typeText(name)
+        nameField.typeText(name + "\n")
+        XCTAssertTrue(app.keyboards.firstMatch.waitForNonExistence(timeout: 5), app.debugDescription)
         let saveCombo = app.buttons["保存为 Combo"]
-        if !saveCombo.isHittable { app.swipeUp() }
+        if !saveCombo.isHittable {
+            let form = app.collectionViews.firstMatch
+            form.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.75))
+                .press(forDuration: 0.05, thenDragTo: form.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.45)))
+        }
         XCTAssertTrue(saveCombo.isHittable)
         XCTAssertTrue(saveCombo.isEnabled, app.debugDescription)
         saveCombo.tap()

@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct IntakeNameField: View {
+    @FocusState private var isFocused: Bool
     let title: LocalizedStringKey
     let kind: SavedKind
     @Binding var text: String
@@ -18,6 +19,9 @@ struct IntakeNameField: View {
             HStack {
                 TextField(title, text: $text)
                     .autocorrectionDisabled()
+                    .focused($isFocused)
+                    .submitLabel(.done)
+                    .onSubmit { isFocused = false }
                     .frame(minHeight: 44)
                 Button(action: onLookup) {
                     Image(systemName: "magnifyingglass")
