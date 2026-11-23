@@ -30,7 +30,7 @@ CI 不需要签名证书或 Apple ID。生成的工程、派生数据和 IPA 均
 2. 在 Sideloadly 选择下载并解压得到的 `FoodDiary-unsigned.ipa`，使用你自己的 Apple ID 重新签名并安装。下载的 IPA 需要签名才能在设备上安装。
 3. 后续以相同的 Bundle ID 和 Apple ID 覆盖安装，避免先卸载，以保留本机数据。首次设备授权和个人签名有效期按设备及签名工具提示处理。
 
-应用的饮食和健康数据保存在 iPhone 本机。GitHub Actions artifact 只包含构建产物。Phase 5 提供完整 JSON 备份和 CSV 导出。
+应用的数据库和照片保存在 iPhone 的 App 沙盒中，并排除在系统备份外。GitHub Actions artifact 只包含构建产物。Phase 5 提供完整 JSON 备份和 CSV 导出。
 
 ### Phase 2 真机验收
 
