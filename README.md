@@ -1,6 +1,6 @@
 # 食迹 FoodDiary
 
-食迹是一款用来记录饮食和身体感受的 iOS app。当前 Phase 1 提供首页、记录、避雷和设置四个页面，以及三种独立录入入口的界面预览。
+食迹是一款用来记录饮食和身体感受的 iOS app。当前 Phase 2 支持正餐和独立零食的新增、编辑、查看和删除，自制餐可逐条填写食材和采购来源。照片及饮食记录保存在本机。可以在录入时分别保存常用店铺与食物，也可以在设置中管理。
 
 | 项目 | 配置 |
 | --- | --- |
@@ -15,7 +15,7 @@
 
 1. 将提交推送到 FoodDiary GitHub 仓库的 `main`。也可进入 **Actions**，选择 **iOS unsigned IPA**，使用 **Run workflow** 手动触发。[FoodDiary Actions](https://github.com/loliruru/fooddiary-ios/actions)
 2. 打开对应提交的运行记录。构建日志中会列出 Xcode 和 SDK 版本，随后安装或调用 XcodeGen，生成工程并编译 arm64 真机 Release 版本。
-3. 构建成功后，在该次运行的 **Artifacts** 下载 `FoodDiary-unsigned-ipa-<commit SHA>`，解压得到 `FoodDiary-unsigned.ipa`。面向 `main` 的 PR 会运行构建检查。
+3. 真机 Release 构建通过后，工作流会运行 iPhone 模拟器上的 SwiftData 和录入流程 XCTest。构建和测试成功后，在该次运行的 **Artifacts** 下载 `FoodDiary-unsigned-ipa-<commit SHA>`，解压得到 `FoodDiary-unsigned.ipa`。面向 `main` 的 PR 也会运行构建和测试。
 4. 保留用于签名的原始 IPA。在 Windows PowerShell 可列出包内容，核对 `Payload/FoodDiary.app/Info.plist` 和 `Payload/FoodDiary.app/FoodDiary`。
 
    ```powershell
@@ -31,6 +31,13 @@ CI 不需要签名证书或 Apple ID。生成的工程、派生数据和 IPA 均
 3. 后续以相同的 Bundle ID 和 Apple ID 覆盖安装，避免先卸载，以保留本机数据。首次设备授权和个人签名有效期按设备及签名工具提示处理。
 
 应用的饮食和健康数据保存在 iPhone 本机。GitHub Actions artifact 只包含构建产物。Phase 5 提供完整 JSON 备份和 CSV 导出。
+
+### Phase 2 真机验收
+
+- 用首页分别记录正餐和零食，再到「记录」查看时间、名称和类型。强制退出 App 后重新打开，查看、编辑并删除一条记录。
+- 录入不收藏的名称后检查「历史与常用」的两个列表。显式保存一个店铺和一个食物，再在设置中改名或删除，核对历史里的原名称。
+- 给同一餐录入来自不同来源的食材，也保留一条未填来源的食材。重开后核对详情。重复上一条零食，检查新事件时间和填充内容。
+- 从系统照片选择器选择照片，确认重开了还能查看。分别试一次取消更换、保存更换及删除含照片的记录。
 
 ## App Icon
 

@@ -46,5 +46,8 @@
 - 2026-11-22 用户确认后实施 Phase 1。应用入口通过 `DiaryTabs` 打开首页、记录、避雷和设置。四页共享 `DiaryTheme`、卡片和按钮样式，按钮按压反馈读取 Reduce Motion。首页三个录入入口显示可关闭的静态预览。原创 1024×1024 App Icon 已纳入 Asset Catalog，构建号为 2。
 - Phase 1 工程提交 `dd6424d951e075eaa2e4119c5f937592f3d7c85c` 已推送到 `main`。本地检查确认 30 条简体中文文案与引用一致、浅色和深色文字配色通过对比度检查、图标为不透明 RGB PNG。[Actions run 45040212132](https://github.com/loliruru/fooddiary-ios/actions/runs/45040212132) 真机 Release 构建成功。已下载 [Phase 1 artifact](https://github.com/loliruru/fooddiary-ios/actions/runs/45040212132/artifacts/14761840625)，确认 IPA 内含 `Payload/FoodDiary.app`、arm64、App Icon 和中文资源。IPA SHA-256 为 `248d68bc322bde9dce24ddc4134411d9add6a20f84c79f3caf2e73d23bbf356d`。
 - 2026-11-23 完成 Phase 1 云端界面验收。独立验收分支 `codex/phase1-visual-check` 的 iPhone 17 模拟器（iOS 26.5）跑通浅色和深色的四 Tab 导航、回到首页、三个录入预览的打开与关闭，以及最大辅助字号下的身体不适入口，并复核了两套外观截图。[模拟器运行](https://github.com/loliruru/fooddiary-ios/actions/runs/45041213466) · [截图产物](https://github.com/loliruru/fooddiary-ios/actions/runs/45041213466/artifacts/14761973732)
-- Phase 2 待用户确认。接手先使用 SwiftData 接入正餐、独立零食、食材明细及常用店铺和食物。将 `HomeView` 中的正餐和零食预览换成对应的录入，从记录页接入增删改查。身体不适入口在 Phase 3 接入独立症状事件，按 Phase 4 再接入搜索筛选、候选回溯和统计。
+- 2026-11-23 用户确认 Phase 1 后实施 Phase 2。首页和记录页接入正餐与零食录入、按天浏览与详情；详情可编辑、复制或二次确认后删除。自制餐的食材按表单顺序保存，每条可独立填写采购来源、份量和备注。历史与常用分别提供快捷选择，常用项从录入页显式确认保存或在设置管理，饮食历史持久化原始名称。
+- Phase 2 构建号为 3。本机 SwiftData 关闭 CloudKit，数据库和照片目录排除在系统备份外。照片从系统选择器读取，缩放为最长边 1600 像素的 JPEG，并在保存成功后清理被替换、移除或删除的照片。复用时生成独立照片文件。云端工作流接入 SwiftData 和录入流程 XCTest，运行与 IPA 验收结果随阶段补记。
+- Windows 静态检查通过 Swift 源文件语法、XcodeGen 与工作流 YAML、98 条字符串键、照片测试样本及 Git 差异检查。
+- Phase 3 待用户确认。接手按 V2 第 12.4、12.6 节实现独立症状事件与 Combo，身体不适入口目前显示 Phase 1 的预览。
 - 后续阶段更新本节的完成范围、提交、云端 run、验收结果及待办。真机交互按 README 的侧载流程在 iPhone 上验收。

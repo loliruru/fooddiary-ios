@@ -1,3 +1,4 @@
+import SwiftData
 import SwiftUI
 
 struct HomeView: View {
@@ -24,17 +25,21 @@ struct HomeView: View {
             }
         }
 
-        var description: LocalizedStringKey {
-            switch self {
-            case .meal: "home.preview.meal"
-            case .snack: "home.preview.snack"
-            case .symptom: "home.preview.symptom"
-            }
-        }
     }
 
+    let showSaved: Bool
+    let onRecordAdded: () -> Void
+
+    @Environment(\.scenePhase) private var scenePhase
     @Environment(\.dynamicTypeSize) private var typeSize
+    @Query(sort: \IntakeEvent.eventTime, order: .reverse) private var events: [IntakeEvent]
     @State private var selectedAction: QuickAction?
+    @State private var today = Date.now
+
+    private var todayEvents: [IntakeEvent] {
+        let calendar = Calendar.autoupdatingCurrent
+        return events.filter { calendar.isDate($0.eventTime, inSameDayAs: today) }
+    }
 
     var body: some View {
         DiaryPage {
@@ -45,12 +50,18 @@ struct HomeView: View {
 
                 DiaryPageTitle(title: "home.greeting")
 
-                Text(Date.now, format: .dateTime.month().day().weekday(.wide).locale(.init(identifier: "zh-Hans")))
+                Text(today, format: .dateTime.month().day().weekday(.wide))
                     .font(.subheadline)
                     .foregroundStyle(DiaryTheme.secondaryText)
             }
 
             todayCard
+
+            if showSaved {
+                Label("home.saved", systemImage: "checkmark.circle.fill")
+                    .font(.subheadline.weight(.medium))
+                    .foregroundStyle(DiaryTheme.accent)
+            }
 
             VStack(spacing: 10) {
                 actionButton(for: .meal, kind: .primary)
@@ -63,29 +74,50 @@ struct HomeView: View {
                     actionButton(for: .symptom, kind: .secondary)
                 }
             }
-        }
-        .sheet(item: $selectedAction) { action in
-            NavigationStack {
-                DiaryPage {
-                    DiaryCard {
-                        DiaryEmptyState(
-                            title: "home.preview.title",
-                            message: action.description,
-                            symbol: action.symbol
-                        )
-                    }
-                }
-                .navigationTitle(action.title)
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .confirmationAction) {
-                        Button("common.done") {
-                            selectedAction = nil
-                        }
+            if !todayEvents.isEmpty {
+                LazyVStack(spacing: 10) {
+                    ForEach(todayEvents) { event in
+                        IntakeRow(event: event, onRecordAdded: onRecordAdded)
                     }
                 }
             }
-            .tint(DiaryTheme.accent)
+        }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active { today = .now }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .NSCalendarDayChanged)) { _ in
+            today = .now
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .NSSystemTimeZoneDidChange)) { _ in
+            today = .now
+        }
+        .sheet(item: $selectedAction) { action in
+            switch action {
+            case .meal:
+                IntakeEditor(type: .meal, onSave: onRecordAdded)
+            case .snack:
+                IntakeEditor(type: .snack, onSave: onRecordAdded)
+            case .symptom:
+                NavigationStack {
+                    DiaryPage {
+                        DiaryCard {
+                            DiaryEmptyState(
+                                title: "home.preview.title",
+                                message: "home.preview.symptom",
+                                symbol: action.symbol
+                            )
+                        }
+                    }
+                    .navigationTitle(action.title)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .confirmationAction) {
+                            Button("common.done") { selectedAction = nil }
+                        }
+                    }
+                }
+                .tint(DiaryTheme.accent)
+            }
         }
     }
 
@@ -98,7 +130,7 @@ struct HomeView: View {
                         .accessibilityAddTraits(.isHeader)
 
                     HStack(alignment: .firstTextBaseline, spacing: 5) {
-                        Text(0, format: .number)
+                        Text(todayEvents.count, format: .number)
                             .font(.system(.largeTitle, design: .rounded, weight: .semibold))
                             .monospacedDigit()
                         Text("home.intake.unit")
@@ -107,9 +139,11 @@ struct HomeView: View {
                     .foregroundStyle(DiaryTheme.accent)
                     .accessibilityElement(children: .combine)
 
-                    Text("home.empty.title")
-                        .font(.subheadline)
-                        .foregroundStyle(DiaryTheme.secondaryText)
+                    if todayEvents.isEmpty {
+                        Text("home.empty.title")
+                            .font(.subheadline)
+                            .foregroundStyle(DiaryTheme.secondaryText)
+                    }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
 
@@ -135,6 +169,5 @@ struct HomeView: View {
             Label(action.title, systemImage: action.symbol)
         }
         .buttonStyle(DiaryButtonStyle(kind: kind))
-        .accessibilityHint("home.preview.hint")
     }
 }

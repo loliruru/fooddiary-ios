@@ -33,6 +33,31 @@ jobs:
       - name: Build and verify unsigned IPA
         run: bash scripts/build-ios-unsigned.sh
 
+      - name: Test local storage on an iPhone simulator
+        run: |
+          simulator_id="$(xcrun simctl list devices available -j | python3 -c '
+          import json
+          import sys
+
+          runtimes = json.load(sys.stdin)["devices"]
+          for runtime, devices in reversed(runtimes.items()):
+              if ".iOS-" in runtime:
+                  for device in devices:
+                      if device["name"].startswith("iPhone") and device["isAvailable"]:
+                          print(device["udid"])
+                          sys.exit(0)
+          sys.exit("No available iPhone simulator")
+          ')"
+          xcodebuild \
+            -project FoodDiary.xcodeproj \
+            -scheme FoodDiary \
+            -destination "platform=iOS Simulator,id=$simulator_id" \
+            -derivedDataPath build/DerivedData \
+            -resultBundlePath build/FoodDiary-tests.xcresult \
+            -parallel-testing-enabled NO \
+            CODE_SIGNING_ALLOWED=NO \
+            test
+
       - name: Upload unsigned IPA
         if: github.event_name != 'pull_request'
         uses: actions/upload-artifact@v7

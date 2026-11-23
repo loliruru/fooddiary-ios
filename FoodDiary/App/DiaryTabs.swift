@@ -9,18 +9,19 @@ struct DiaryTabs: View {
     }
 
     @State private var selection: Tab = .home
+    @State private var lastSaved: UUID?
 
     var body: some View {
         TabView(selection: $selection) {
             NavigationStack {
-                HomeView()
+                HomeView(showSaved: lastSaved != nil, onRecordAdded: recordAdded)
                     .toolbar(.hidden, for: .navigationBar)
             }
             .tabItem { Label("tabs.home", systemImage: "house") }
             .tag(Tab.home)
 
             NavigationStack {
-                HistoryView { selection = .home }
+                HistoryView(onRecordAdded: recordAdded)
                     .toolbar(.hidden, for: .navigationBar)
             }
             .tabItem { Label("tabs.history", systemImage: "list.bullet.rectangle") }
@@ -41,5 +42,18 @@ struct DiaryTabs: View {
             .tag(Tab.settings)
         }
         .tint(DiaryTheme.accent)
+        .task(id: lastSaved) {
+            guard lastSaved != nil else { return }
+            do {
+                try await Task.sleep(for: .seconds(3))
+                lastSaved = nil
+            } catch {}
+        }
+    }
+
+    private func recordAdded() {
+        selection = .home
+        lastSaved = UUID()
+        UIAccessibility.post(notification: .announcement, argument: String(localized: "home.saved"))
     }
 }

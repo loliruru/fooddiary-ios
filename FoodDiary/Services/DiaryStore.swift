@@ -1,0 +1,177 @@
+import Foundation
+import SwiftData
+
+@MainActor
+struct DiaryStore {
+    enum InputError: Error {
+        case invalidName
+        case duplicateFavorite
+    }
+
+    let context: ModelContext
+    var photos = DiaryPhotos.local
+
+    static func makeContainer(at storeURL: URL) throws -> ModelContainer {
+        let schema = Schema([IntakeEvent.self, IngredientItem.self, SavedPlace.self, SavedFood.self])
+        let config = ModelConfiguration(schema: schema, url: storeURL, cloudKitDatabase: .none)
+        return try ModelContainer(for: schema, configurations: [config])
+    }
+
+    static func openLocal() throws -> ModelContainer {
+        var directory = DiaryPhotos.dataDirectory
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        var values = URLResourceValues()
+        values.isExcludedFromBackup = true
+        try directory.setResourceValues(values)
+        let container = try makeContainer(at: directory.appending(path: "Diary.store"))
+        try? DiaryStore(context: container.mainContext).cleanUpPhotos()
+        return container
+    }
+
+    @discardableResult
+    func saveIntake(_ draft: IntakeDraft, editing existing: IntakeEvent? = nil, now: Date = .now) throws -> IntakeEvent {
+        guard draft.canSave, let name = DiaryName.text(draft.displayName) else { throw InputError.invalidName }
+        let event = existing ?? IntakeEvent(intakeType: draft.intakeType, eventTime: draft.eventTime, displayName: name, now: now)
+
+        try commitPhoto(draft.photo, previous: event.photoPath) { path in
+            if existing == nil { context.insert(event) }
+            event.eventTime = draft.eventTime
+            event.displayName = name
+            event.mealTypeRaw = draft.intakeType == .meal ? draft.mealType.rawValue : nil
+            event.merchantName = draft.isHomemade ? nil : DiaryName.text(draft.merchantName)
+            event.brandName = draft.intakeType == .snack ? DiaryName.text(draft.brandName) : nil
+            event.amountText = draft.intakeType == .snack ? DiaryName.text(draft.amountText) : nil
+            event.note = DiaryName.text(draft.note)
+            event.tags = DiaryName.distinct(draft.tags)
+            event.photoPath = path
+            event.updatedAt = now
+            updateIngredients(of: event, from: draft.isHomemade ? draft.ingredients : [])
+            try markFavoritesUsed(in: event, now: now)
+        }
+        return event
+    }
+
+    func deleteIntake(_ event: IntakeEvent) throws {
+        try commitPhoto(.remove, previous: event.photoPath) { _ in
+            context.delete(event)
+        }
+    }
+
+    func saveFavorite(
+        _ kind: SavedKind, name: String, category: String = "", note: String = "",
+        photo: PhotoChange = .keep, editing existing: SavedName? = nil, now: Date = .now
+    ) throws {
+        guard let name = DiaryName.text(name) else { throw InputError.invalidName }
+        let key = DiaryName.normalized(name)
+        let category = DiaryName.text(category)
+
+        switch kind {
+        case .food:
+            let foods = try context.fetch(FetchDescriptor<SavedFood>())
+            guard !foods.contains(where: { $0.id != existing?.id && DiaryName.normalized($0.name) == key }) else {
+                throw InputError.duplicateFavorite
+            }
+            try commit {
+                if case .food(let food)? = existing {
+                    food.name = name
+                    food.category = category
+                } else {
+                    let food = SavedFood(name: name, now: now)
+                    food.category = category
+                    context.insert(food)
+                }
+            }
+        case .place:
+            let places = try context.fetch(FetchDescriptor<SavedPlace>())
+            guard !places.contains(where: { $0.id != existing?.id && DiaryName.normalized($0.name) == key }) else {
+                throw InputError.duplicateFavorite
+            }
+            try commitPhoto(photo, previous: existing?.photoPath) { path in
+                let place: SavedPlace
+                if case .place(let savedPlace)? = existing {
+                    place = savedPlace
+                } else {
+                    place = SavedPlace(name: name, now: now)
+                    context.insert(place)
+                }
+                place.name = name
+                place.category = category
+                place.note = DiaryName.text(note)
+                place.photoPath = path
+            }
+        }
+    }
+
+    func deleteFavorite(_ entry: SavedName) throws {
+        try commitPhoto(.remove, previous: entry.photoPath) { _ in
+            switch entry {
+            case .food(let food): context.delete(food)
+            case .place(let place): context.delete(place)
+            }
+        }
+    }
+
+    func cleanUpPhotos() throws {
+        let events = try context.fetch(FetchDescriptor<IntakeEvent>())
+        let places = try context.fetch(FetchDescriptor<SavedPlace>())
+        photos.removeUnreferenced(keeping: Set(events.compactMap(\.photoPath) + places.compactMap(\.photoPath)))
+    }
+
+    private func updateIngredients(of event: IntakeEvent, from drafts: [IngredientDraft]) {
+        var previous = Dictionary(uniqueKeysWithValues: event.ingredients.map { ($0.id, $0) })
+        var updated: [IngredientItem] = []
+
+        for draft in drafts {
+            guard let name = DiaryName.text(draft.name) else { continue }
+            let item: IngredientItem
+            if let existing = previous.removeValue(forKey: draft.id) {
+                item = existing
+            } else {
+                item = IngredientItem(id: draft.id, name: name, position: updated.count)
+                context.insert(item)
+            }
+            item.name = name
+            item.purchasePlaceName = DiaryName.text(draft.purchasePlaceName)
+            item.amountText = DiaryName.text(draft.amountText)
+            item.note = DiaryName.text(draft.note)
+            item.position = updated.count
+            updated.append(item)
+        }
+        event.ingredients = updated
+        for item in previous.values { context.delete(item) }
+    }
+
+    private func markFavoritesUsed(in event: IntakeEvent, now: Date) throws {
+        let foodKeys = Set(([event.displayName] + event.ingredients.map(\.name)).map(DiaryName.normalized))
+        let places = [event.merchantName].compactMap { $0 } + event.ingredients.compactMap(\.purchasePlaceName)
+        let placeKeys = Set(places.map(DiaryName.normalized))
+
+        for food in try context.fetch(FetchDescriptor<SavedFood>()) where foodKeys.contains(DiaryName.normalized(food.name)) {
+            food.lastUsedAt = now
+        }
+        for place in try context.fetch(FetchDescriptor<SavedPlace>()) where placeKeys.contains(DiaryName.normalized(place.name)) {
+            place.lastUsedAt = now
+        }
+    }
+
+    private func commitPhoto(_ change: PhotoChange, previous: String?, mutate: (String?) throws -> Void) throws {
+        let path = try photos.prepare(change, previous: previous)
+        do {
+            try commit { try mutate(path) }
+        } catch {
+            if path != previous { photos.remove(path) }
+            throw error
+        }
+        if path != previous { photos.remove(previous) }
+    }
+
+    private func commit(_ mutate: () throws -> Void) throws {
+        do {
+            try mutate()
+            try context.save()
+        } catch {
+            context.rollback()
+            throw error
+        }
+    }
+}

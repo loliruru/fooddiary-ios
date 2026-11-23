@@ -6,6 +6,22 @@ struct SettingsView: View {
             DiaryPageTitle(title: "tabs.settings")
 
             DiaryCard {
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("favorites.title")
+                        .font(.headline)
+                        .accessibilityAddTraits(.isHeader)
+                    ForEach([SavedKind.place, .food]) { kind in
+                        NavigationLink {
+                            SavedNamesView(kind: kind)
+                        } label: {
+                            Label(kind.title, systemImage: kind.symbol)
+                        }
+                        .buttonStyle(DiaryButtonStyle(kind: .secondary))
+                    }
+                }
+            }
+
+            DiaryCard {
                 DiaryEmptyState(
                     title: "settings.privacy",
                     message: "settings.privacy.message",
