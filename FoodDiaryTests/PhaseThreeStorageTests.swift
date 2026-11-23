@@ -251,15 +251,16 @@ private enum PhaseTwo {
         var ingredients: [IngredientItem] = []
 
         init(name: String) {
+            let now = Date.now
             id = UUID()
-            eventTime = .now
+            eventTime = now
             intakeTypeRaw = "meal"
             mealTypeRaw = "homemade"
             displayName = name
             photoPath = "legacy.jpg"
             tags = ["晚饭"]
-            createdAt = eventTime
-            updatedAt = eventTime
+            createdAt = now
+            updatedAt = now
         }
     }
 
