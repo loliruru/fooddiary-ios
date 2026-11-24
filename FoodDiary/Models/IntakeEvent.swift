@@ -32,6 +32,8 @@ final class IntakeEvent {
     var ingredients: [IngredientItem] = []
     @Relationship(deleteRule: .nullify, inverse: \SymptomEvent.linkedMeal)
     var linkedSymptoms: [SymptomEvent] = []
+    @Relationship(deleteRule: .cascade, inverse: \SymptomExposureLink.intakeEvent)
+    var exposureLinks: [SymptomExposureLink] = []
 
     var intakeType: IntakeType { IntakeType(rawValue: intakeTypeRaw) ?? .meal }
     var mealType: MealType? { mealTypeRaw.flatMap(MealType.init(rawValue:)) }

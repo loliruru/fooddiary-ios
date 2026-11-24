@@ -37,6 +37,8 @@ final class SymptomEvent {
     var durationCode: String?
     var note: String?
     var linkedMeal: IntakeEvent?
+    @Relationship(deleteRule: .cascade, inverse: \SymptomExposureLink.symptomEvent)
+    var exposureLinks: [SymptomExposureLink] = []
 
     var symptoms: [Symptom] { symptomCodes.compactMap(Symptom.init(rawValue:)) }
     var feeling: BodyFeeling? { feelingCode.flatMap(BodyFeeling.init(rawValue:)) }

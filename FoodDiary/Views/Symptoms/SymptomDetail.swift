@@ -4,6 +4,7 @@ import SwiftUI
 struct SymptomRow: View {
     let event: SymptomEvent
     var showsDate = false
+    var showsDiarrheaCount = false
 
     var body: some View {
         NavigationLink {
@@ -25,6 +26,11 @@ struct SymptomRow: View {
                         if !event.symptoms.isEmpty {
                             SymptomNames(symptoms: event.symptoms)
                                 .font(.subheadline)
+                        }
+                        if showsDiarrheaCount && event.symptoms.contains(.diarrhea) {
+                            Text("avoidance.diarrhea \(event.diarrheaCount)")
+                                .font(.footnote)
+                                .foregroundStyle(DiaryTheme.secondaryText)
                         }
                         Text(event.symptomTime, format: showsDate ? .dateTime.month().day().hour().minute() : .dateTime.hour().minute())
                             .font(.footnote)
@@ -53,6 +59,7 @@ struct SymptomDetail: View {
     @State private var showError = false
 
     let event: SymptomEvent
+    var onDelete: (() -> Void)?
 
     var body: some View {
         DiaryPage {
@@ -106,6 +113,8 @@ struct SymptomDetail: View {
             }
             Button("symptom.delete", role: .destructive) { confirmDelete = true }
                 .frame(maxWidth: .infinity, minHeight: 44)
+            ExposureCandidates(symptom: event)
+                .id(event.symptomTime)
         }
         .navigationTitle("symptom.detail")
         .navigationBarTitleDisplayMode(.inline)
@@ -130,14 +139,18 @@ struct SymptomDetail: View {
     private func delete() {
         do {
             try DiaryStore(context: context).deleteSymptom(event)
-            dismiss()
+            if let onDelete {
+                onDelete()
+            } else {
+                dismiss()
+            }
         } catch {
             showError = true
         }
     }
 }
 
-private struct SymptomNames: View {
+struct SymptomNames: View {
     let symptoms: [Symptom]
 
     var body: some View {

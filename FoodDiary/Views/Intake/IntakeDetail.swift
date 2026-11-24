@@ -6,6 +6,7 @@ struct IntakeRow: View {
     @State private var addingSymptom = false
     let event: IntakeEvent
     var showFeelingPrompt = false
+    var showsDate = false
     let onRecordAdded: () -> Void
 
     private var subtitle: String? {
@@ -64,7 +65,7 @@ struct IntakeRow: View {
                                 .font(.footnote)
                                 .foregroundStyle(DiaryTheme.secondaryText)
                         }
-                        Text(event.eventTime, format: .dateTime.hour().minute())
+                        Text(event.eventTime, format: showsDate ? .dateTime.year().month().day().hour().minute() : .dateTime.hour().minute())
                             .font(.footnote)
                             .foregroundStyle(DiaryTheme.secondaryText)
                     }

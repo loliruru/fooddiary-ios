@@ -19,6 +19,9 @@ final class PhaseThreeFlowTests: XCTestCase {
         XCTAssertEqual(diarrhea.value as? String, "1", app.debugDescription)
         XCTAssertTrue(count.waitForExistence(timeout: 5), app.debugDescription)
         app.navigationBars.buttons["保存"].tap()
+        let review = app.navigationBars["身体记录"]
+        XCTAssertTrue(review.waitForExistence(timeout: 5))
+        review.buttons["完成"].tap()
 
         app.terminate()
         app.launch()

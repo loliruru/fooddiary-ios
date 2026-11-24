@@ -6,6 +6,7 @@ struct DiaryStore {
     enum InputError: Error {
         case invalidName
         case duplicateFavorite
+        case outsideExposureWindow
     }
 
     let context: ModelContext
@@ -14,7 +15,7 @@ struct DiaryStore {
     static func makeContainer(at storeURL: URL) throws -> ModelContainer {
         let schema = Schema([
             IntakeEvent.self, IngredientItem.self, SavedPlace.self, SavedFood.self,
-            SymptomEvent.self, MealCombo.self
+            SymptomEvent.self, MealCombo.self, SymptomExposureLink.self, AvoidanceStatus.self
         ])
         let config = ModelConfiguration(schema: schema, url: storeURL, cloudKitDatabase: .none)
         return try ModelContainer(for: schema, configurations: [config])
@@ -81,6 +82,42 @@ struct DiaryStore {
 
     func deleteSymptom(_ event: SymptomEvent) throws {
         try commit { context.delete(event) }
+    }
+
+    func saveExposureJudgment(
+        _ judgment: ExposureJudgment, symptom: SymptomEvent, intake: IntakeEvent, now: Date = .now
+    ) throws {
+        guard ExposureReview.contains(intake.eventTime, before: symptom.symptomTime) else {
+            throw InputError.outsideExposureWindow
+        }
+        let existing = symptom.exposureLinks.first { $0.intakeEvent?.id == intake.id }
+        try commit {
+            if let existing {
+                existing.judgmentCode = judgment.rawValue
+                existing.updatedAt = now
+            } else if judgment != .unreviewed {
+                context.insert(SymptomExposureLink(symptom: symptom, intake: intake, judgment: judgment, now: now))
+            }
+        }
+    }
+
+    func saveAvoidanceChoice(
+        _ choice: AvoidanceChoice?, for target: AvoidanceTarget, now: Date = .now
+    ) throws {
+        let key = target.id
+        let request = FetchDescriptor<AvoidanceStatus>(predicate: #Predicate { $0.targetKey == key })
+        let existing = try context.fetch(request).first
+        try commit {
+            if let existing, let choice {
+                existing.choiceCode = choice.rawValue
+                existing.displayName = target.name
+                existing.updatedAt = now
+            } else if let existing {
+                context.delete(existing)
+            } else if let choice {
+                context.insert(AvoidanceStatus(target: target, choice: choice, now: now))
+            }
+        }
     }
 
     @discardableResult

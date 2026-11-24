@@ -12,13 +12,57 @@
         }
       }
     },
+    "avoidance.category": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "查看类别"
+          }
+        }
+      }
+    },
+    "avoidance.counts %lld %lld": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "有不适记录 %1$lld 次／共摄入 %2$lld 次"
+          }
+        }
+      }
+    },
+    "avoidance.detail": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "待观察详情"
+          }
+        }
+      }
+    },
+    "avoidance.diarrhea %lld": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "腹泻 %lld 次"
+          }
+        }
+      }
+    },
     "avoidance.empty.message": {
       "extractionState": "manual",
       "localizations": {
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "结合原始记录回顾食物、食材和店铺的疑似关联。"
+            "value": "记录摄入后，可在这里回顾对应的食物、食材或店铺。"
           }
         }
       }
@@ -34,13 +78,112 @@
         }
       }
     },
+    "avoidance.explanation": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "有不适记录仅统计明确关联、标记为不舒服且有症状的摄入。每次摄入只计一次。怀疑次数按逐条判断计数，供复核。"
+          }
+        }
+      }
+    },
+    "avoidance.food": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "食物"
+          }
+        }
+      }
+    },
+    "avoidance.ingredient": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "食材"
+          }
+        }
+      }
+    },
+    "avoidance.latest %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最近一次不适 %@"
+          }
+        }
+      }
+    },
     "avoidance.manual": {
       "extractionState": "manual",
       "localizations": {
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "手动避开"
+            "value": "手动状态"
+          }
+        }
+      }
+    },
+    "avoidance.noOriginals": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "目前没有对应的摄入记录。"
+          }
+        }
+      }
+    },
+    "avoidance.originals": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "原始记录"
+          }
+        }
+      }
+    },
+    "avoidance.other": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "其他已记录的摄入对象"
+          }
+        }
+      }
+    },
+    "avoidance.place": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "店铺"
+          }
+        }
+      }
+    },
+    "avoidance.placesAndBrands": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "店铺与品牌"
           }
         }
       }
@@ -51,7 +194,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "重复出现不适"
+            "value": "重复出现不适，待观察"
           }
         }
       }
@@ -62,7 +205,95 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "单次不适"
+            "value": "单次不适记录"
+          }
+        }
+      }
+    },
+    "avoidance.smallSample": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "记录数量较少，暂难判断。"
+          }
+        }
+      }
+    },
+    "avoidance.status.avoid": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "暂时避开"
+          }
+        }
+      }
+    },
+    "avoidance.status.dismissed": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "不再关注"
+          }
+        }
+      }
+    },
+    "avoidance.status.none": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未标记"
+          }
+        }
+      }
+    },
+    "avoidance.status.retried": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已重新尝试"
+          }
+        }
+      }
+    },
+    "avoidance.status.watch": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "待观察"
+          }
+        }
+      }
+    },
+    "avoidance.suspectedOnly": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已标记怀疑，待观察"
+          }
+        }
+      }
+    },
+    "avoidance.suspicions %lld": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "标记怀疑 %lld 次"
           }
         }
       }
@@ -221,6 +452,17 @@
         }
       }
     },
+    "common.all": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "全部"
+          }
+        }
+      }
+    },
     "common.cancel": {
       "extractionState": "manual",
       "localizations": {
@@ -327,6 +569,116 @@
           "stringUnit": {
             "state": "translated",
             "value": "未填写"
+          }
+        }
+      }
+    },
+    "exposure.elapsed %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "距症状开始约 %@ 小时"
+          }
+        }
+      }
+    },
+    "exposure.empty": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "这段时间内没有摄入记录。"
+          }
+        }
+      }
+    },
+    "exposure.ingredientSource %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "采购来源 · %@"
+          }
+        }
+      }
+    },
+    "exposure.judgment": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "选择对这次摄入的判断"
+          }
+        }
+      }
+    },
+    "exposure.notRelated": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "暂不认为有关"
+          }
+        }
+      }
+    },
+    "exposure.suspected": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "我怀疑与此有关"
+          }
+        }
+      }
+    },
+    "exposure.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "时间上可能相关的摄入"
+          }
+        }
+      }
+    },
+    "exposure.unreviewed": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未判断"
+          }
+        }
+      }
+    },
+    "exposure.unsure": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "不确定"
+          }
+        }
+      }
+    },
+    "exposure.window %lld": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "可复核症状开始前 %lld 小时的记录。时间先后仅供参考。"
           }
         }
       }
@@ -573,6 +925,39 @@
         }
       }
     },
+    "history.applyFilters": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "应用"
+          }
+        }
+      }
+    },
+    "history.clearSearch": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "清除搜索"
+          }
+        }
+      }
+    },
+    "history.dateRange": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "按日期范围筛选"
+          }
+        }
+      }
+    },
     "history.empty.message": {
       "extractionState": "manual",
       "localizations": {
@@ -591,6 +976,116 @@
           "stringUnit": {
             "state": "translated",
             "value": "还没有记录"
+          }
+        }
+      }
+    },
+    "history.endDate": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "结束日期"
+          }
+        }
+      }
+    },
+    "history.filters": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "筛选"
+          }
+        }
+      }
+    },
+    "history.filters.active": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "筛选已启用"
+          }
+        }
+      }
+    },
+    "history.kind": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "记录类型"
+          }
+        }
+      }
+    },
+    "history.kind.symptoms": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "身体不适"
+          }
+        }
+      }
+    },
+    "history.noMatches": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有符合条件的记录"
+          }
+        }
+      }
+    },
+    "history.noMatches.message": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "试试更换搜索词或调整筛选条件。"
+          }
+        }
+      }
+    },
+    "history.resetFilters": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重置筛选"
+          }
+        }
+      }
+    },
+    "history.search": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "搜索食物、食材或店铺"
+          }
+        }
+      }
+    },
+    "history.startDate": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "开始日期"
           }
         }
       }

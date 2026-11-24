@@ -9,6 +9,7 @@ struct SymptomEditor: View {
     @Query(sort: \IntakeEvent.eventTime, order: .reverse) private var intakes: [IntakeEvent]
     @State private var draft: SymptomDraft
     @State private var showError = false
+    @State private var savedEvent: SymptomEvent?
 
     private let editing: SymptomEvent?
     private let suggestedMeal: IntakeEvent?
@@ -25,65 +26,78 @@ struct SymptomEditor: View {
 
     var body: some View {
         NavigationStack {
-            Form {
-                Section {
-                    DatePicker("symptom.started", selection: $draft.symptomTime)
-                }
-                if !meals.isEmpty {
-                    mealAssociation
-                }
-                feelingChoices
-                Section("symptom.list") {
-                    ForEach(Symptom.allCases) { symptom in
-                        Toggle(isOn: selection(for: symptom)) {
-                            Text(symptom.title)
-                        }
-                        .frame(minHeight: 44)
-                        if symptom == .diarrhea && draft.symptoms.contains(.diarrhea) {
-                            Stepper(value: $draft.diarrheaCount, in: 0...Int.max) {
-                                LabeledContent("symptom.diarrheaCount") {
-                                    Text(draft.diarrheaCount, format: .number)
-                                }
-                            }
-                            .accessibilityIdentifier("symptom.diarrheaCount")
+            if let savedEvent {
+                SymptomDetail(event: savedEvent, onDelete: { dismiss() })
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button("common.done") { dismiss() }
                         }
                     }
-                }
-                DisclosureGroup("symptom.more") {
-                    Picker("symptom.severity", selection: $draft.severity) {
-                        Text("common.unspecified").tag(Optional<SymptomSeverity>.none)
-                        ForEach(SymptomSeverity.allCases) { severity in
-                            Text(severity.title).tag(Optional(severity))
-                        }
-                    }
-                    Picker("symptom.duration", selection: $draft.duration) {
-                        Text("common.unspecified").tag(Optional<SymptomDuration>.none)
-                        ForEach(SymptomDuration.allCases) { duration in
-                            Text(duration.title).tag(Optional(duration))
-                        }
-                    }
-                    TextField("intake.notePrompt", text: $draft.note, axis: .vertical)
-                        .lineLimit(3...7)
-                }
-            }
-            .scrollContentBackground(.hidden)
-            .scrollDismissesKeyboard(.interactively)
-            .background(DiaryTheme.canvas)
-            .navigationTitle(editing == nil ? "home.action.symptom" : "symptom.edit")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("common.cancel") { dismiss() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("common.save", action: save).fontWeight(.semibold)
-                }
-            }
-            .alert("common.saveError", isPresented: $showError) {
-                Button("common.done", role: .cancel) {}
+            } else {
+                editorForm
             }
         }
         .tint(DiaryTheme.accent)
+    }
+
+    private var editorForm: some View {
+        Form {
+            Section {
+                DatePicker("symptom.started", selection: $draft.symptomTime)
+            }
+            if !meals.isEmpty {
+                mealAssociation
+            }
+            feelingChoices
+            Section("symptom.list") {
+                ForEach(Symptom.allCases) { symptom in
+                    Toggle(isOn: selection(for: symptom)) {
+                        Text(symptom.title)
+                    }
+                    .frame(minHeight: 44)
+                    if symptom == .diarrhea && draft.symptoms.contains(.diarrhea) {
+                        Stepper(value: $draft.diarrheaCount, in: 0...Int.max) {
+                            LabeledContent("symptom.diarrheaCount") {
+                                Text(draft.diarrheaCount, format: .number)
+                            }
+                        }
+                        .accessibilityIdentifier("symptom.diarrheaCount")
+                    }
+                }
+            }
+            DisclosureGroup("symptom.more") {
+                Picker("symptom.severity", selection: $draft.severity) {
+                    Text("common.unspecified").tag(Optional<SymptomSeverity>.none)
+                    ForEach(SymptomSeverity.allCases) { severity in
+                        Text(severity.title).tag(Optional(severity))
+                    }
+                }
+                Picker("symptom.duration", selection: $draft.duration) {
+                    Text("common.unspecified").tag(Optional<SymptomDuration>.none)
+                    ForEach(SymptomDuration.allCases) { duration in
+                        Text(duration.title).tag(Optional(duration))
+                    }
+                }
+                TextField("intake.notePrompt", text: $draft.note, axis: .vertical)
+                    .lineLimit(3...7)
+            }
+        }
+        .scrollContentBackground(.hidden)
+        .scrollDismissesKeyboard(.interactively)
+        .background(DiaryTheme.canvas)
+        .navigationTitle(editing == nil ? "home.action.symptom" : "symptom.edit")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button("common.cancel") { dismiss() }
+            }
+            ToolbarItem(placement: .confirmationAction) {
+                Button("common.save", action: save).fontWeight(.semibold)
+            }
+        }
+        .alert("common.saveError", isPresented: $showError) {
+            Button("common.done", role: .cancel) {}
+        }
     }
 
     private var mealAssociation: some View {
@@ -180,8 +194,12 @@ struct SymptomEditor: View {
 
     private func save() {
         do {
-            try DiaryStore(context: context).saveSymptom(draft, editing: editing)
-            dismiss()
+            let event = try DiaryStore(context: context).saveSymptom(draft, editing: editing)
+            if editing == nil {
+                savedEvent = event
+            } else {
+                dismiss()
+            }
             onSave()
         } catch {
             showError = true

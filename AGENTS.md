@@ -58,5 +58,6 @@
 - 已下载 [Phase 3 artifact](https://github.com/loliruru/fooddiary-ios/actions/runs/45212309797/artifacts/14836179687)，验证 `FoodDiary-unsigned.ipa` 含 `Payload/FoodDiary.app`、arm64、最低 iOS 17.0、正确 Bundle ID、App Icon 和 146 条简体中文字符串。包内无签名资源和描述文件。IPA SHA-256 为 `25c984f3eb449d1cbe7a568bc839170a9dcaedb8fc9e339c71c7d569fb80a291`。
 - 2026-11-24 根据用户反馈修复 Phase 3 的 Combo 保存，构建号为 5。只有食材时自动命名，点击后显示成功或具体缺项。保存的模板在取消本餐后仍保留，新建餐食时可直接套用并切换到自制。[Actions run 45420119089](https://github.com/loliruru/fooddiary-ios/actions/runs/45420119089) 的 arm64 Release 构建成功，iPhone 17 Pro（iOS 26.2）的 10 项单元与存储测试和 3 项界面测试全部通过。验收工程提交为 `8436ec1916440ad25d470eddbefe8731a1599e38`。
 - Windows 已检查 31 个 Swift 文件与 147 条字符串键，并下载 [Combo 修复 IPA](https://github.com/loliruru/fooddiary-ios/actions/runs/45420119089/artifacts/14933874053) 核对 arm64、iOS 17.0、构建号 5、Bundle ID、中文资源及无签名打包。IPA SHA-256 为 `24a10608eb91dc8a46f7845fe668aa682c028a009d1932ede895e283b599bb0a`。
-- Phase 4 待用户确认。iPhone 侧载覆盖安装和真机交互按 [README.md](README.md) 的 Phase 3 步骤验收。
+- 2026-11-24 用户确认 Phase 3 后实施 Phase 4，构建号为 6。身体记录保存后进入详情，以症状开始时间查询此前 48 小时的正餐和零食。自制餐候选显示食材及采购来源。每条判断独立保存，编辑时间后只有仍在回顾窗口的判断计入候选统计。删除任一侧时清理对应判断，保留另一侧的独立事件。
+- 时间线可按名称搜索，并按日期、记录类型、感受和症状组合筛选。避雷按食物、食材、店铺及品牌汇总摄入总数、用户怀疑次数及有不适证据的摄入数，保留原始记录入口与独立的手动状态。单次和至少两次分开显示，少于 5 次摄入显示少样本提示。
 - 后续阶段更新本节的完成范围、提交、云端 run、验收结果及待办。真机交互按 README 的侧载流程在 iPhone 上验收。
