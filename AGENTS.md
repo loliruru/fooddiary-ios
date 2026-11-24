@@ -56,5 +56,7 @@
 - 2026-11-24 完成 Phase 3 云端验收。Windows 检查通过 31 个 Swift 源文件的语法、146 条简体中文字符串及引用、XcodeGen 与工作流 YAML、构建脚本语法和 Git 差异。Phase 3 最终工程提交 `ed55cac0019a05e238f1a6c4b87c32123f482aad` 已推送到 `main`。[Actions run 45212309797](https://github.com/loliruru/fooddiary-ios/actions/runs/45212309797) 的 arm64 真机 Release 构建成功，iPhone 17 Pro 模拟器（iOS 26.2）的 9 项 SwiftData 测试和 3 项界面测试全部通过。
 - 云端测试覆盖 Phase 2 存档升级、症状开始与填写时间、腹泻次数边界、身体记录与餐食的独立删除、Combo 复制与历史快照，以及在界面创建、套用、编辑和删除 Combo、从首页录入独立症状并在重启后编辑和删除。
 - 已下载 [Phase 3 artifact](https://github.com/loliruru/fooddiary-ios/actions/runs/45212309797/artifacts/14836179687)，验证 `FoodDiary-unsigned.ipa` 含 `Payload/FoodDiary.app`、arm64、最低 iOS 17.0、正确 Bundle ID、App Icon 和 146 条简体中文字符串。包内无签名资源和描述文件。IPA SHA-256 为 `25c984f3eb449d1cbe7a568bc839170a9dcaedb8fc9e339c71c7d569fb80a291`。
+- 2026-11-24 根据用户反馈修复 Phase 3 的 Combo 保存，构建号为 5。只有食材时自动命名，点击后显示成功或具体缺项。保存的模板在取消本餐后仍保留，新建餐食时可直接套用并切换到自制。[Actions run 45420119089](https://github.com/loliruru/fooddiary-ios/actions/runs/45420119089) 的 arm64 Release 构建成功，iPhone 17 Pro（iOS 26.2）的 10 项单元与存储测试和 3 项界面测试全部通过。验收工程提交为 `8436ec1916440ad25d470eddbefe8731a1599e38`。
+- Windows 已检查 31 个 Swift 文件与 147 条字符串键，并下载 [Combo 修复 IPA](https://github.com/loliruru/fooddiary-ios/actions/runs/45420119089/artifacts/14933874053) 核对 arm64、iOS 17.0、构建号 5、Bundle ID、中文资源及无签名打包。IPA SHA-256 为 `24a10608eb91dc8a46f7845fe668aa682c028a009d1932ede895e283b599bb0a`。
 - Phase 4 待用户确认。iPhone 侧载覆盖安装和真机交互按 [README.md](README.md) 的 Phase 3 步骤验收。
 - 后续阶段更新本节的完成范围、提交、云端 run、验收结果及待办。真机交互按 README 的侧载流程在 iPhone 上验收。
