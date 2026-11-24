@@ -43,7 +43,7 @@ final class PhaseThreeFlowTests: XCTestCase {
         if !delete.isHittable { app.swipeUp() }
         delete.tap()
         app.buttons["删除"].tap()
-        XCTAssertTrue(app.staticTexts["还没有记录"].waitForExistence(timeout: 5))
+        XCTAssertTrue(record.waitForNonExistence(timeout: 5))
     }
 
     func testCreateApplyEditAndDeleteComboFromApp() {
@@ -106,10 +106,9 @@ final class PhaseThreeFlowTests: XCTestCase {
             .matching(NSPredicate(format: "label CONTAINS %@", name + " Test")).firstMatch
         XCTAssertTrue(renamed.waitForExistence(timeout: 5), app.debugDescription)
 
-        combo.tap()
+        renamed.tap()
         let deleteCombo = app.buttons["删除 Combo"]
-        XCTAssertTrue(deleteCombo.waitForExistence(timeout: 5))
-        if !deleteCombo.isHittable { app.swipeUp() }
+        showInForm(deleteCombo, app: app)
         deleteCombo.tap()
         app.buttons["删除"].tap()
         XCTAssertTrue(app.staticTexts["还没有 Combo"].waitForExistence(timeout: 5))
@@ -129,7 +128,7 @@ final class PhaseThreeFlowTests: XCTestCase {
         if !deleteMeal.isHittable { app.swipeUp() }
         deleteMeal.tap()
         app.buttons["删除"].tap()
-        XCTAssertTrue(app.staticTexts["还没有记录"].waitForExistence(timeout: 5))
+        XCTAssertTrue(record.waitForNonExistence(timeout: 5))
     }
 
     private func launchDiary() -> XCUIApplication {
