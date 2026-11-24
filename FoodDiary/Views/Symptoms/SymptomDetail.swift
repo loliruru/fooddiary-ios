@@ -32,7 +32,7 @@ struct SymptomRow: View {
                                 .font(.footnote)
                                 .foregroundStyle(DiaryTheme.secondaryText)
                         }
-                        Text(event.symptomTime, format: showsDate ? .dateTime.month().day().hour().minute() : .dateTime.hour().minute())
+                        Text(event.symptomTime, format: showsDate ? .dateTime.year().month().day().hour().minute() : .dateTime.hour().minute())
                             .font(.footnote)
                             .foregroundStyle(DiaryTheme.secondaryText)
                     }

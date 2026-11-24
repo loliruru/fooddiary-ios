@@ -91,6 +91,7 @@ struct AvoidanceDetail: View {
 }
 
 struct AvoidanceSummaryText: View {
+    @Environment(\.locale) private var locale
     let summary: AvoidanceSummary
 
     var body: some View {
@@ -102,7 +103,7 @@ struct AvoidanceSummaryText: View {
             Text("avoidance.counts \(summary.evidenceCount) \(summary.intakes.count)")
             Text("avoidance.suspicions \(summary.suspectedCount)")
             if let latest = summary.latestEvidence {
-                let date = latest.formatted(.dateTime.year().month().day())
+                let date = latest.formatted(.dateTime.year().month().day().hour().minute().locale(locale))
                 Text("avoidance.latest \(date)")
             }
             if summary.intakes.count < AvoidanceSummary.smallSampleLimit {

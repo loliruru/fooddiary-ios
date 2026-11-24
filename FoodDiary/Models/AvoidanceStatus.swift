@@ -11,7 +11,7 @@ enum AvoidanceChoice: String, CaseIterable, Identifiable {
     var id: Self { self }
 }
 
-struct AvoidanceTarget: Identifiable {
+struct AvoidanceTarget: Identifiable, Hashable {
     let kind: AvoidanceKind
     let name: String
 

@@ -105,7 +105,11 @@ final class PhaseFourTests: XCTestCase {
         draft.eventTime = base.addingTimeInterval(3600)
         draft.ingredients = []
         let earlierMeal = try store.saveIntake(draft)
-        let snack = try addIntake("Ｓｐｉｎａｃｈ", type: .snack, at: base.addingTimeInterval(7200), store: store)
+        var snackDraft = IntakeDraft(type: .snack, now: base.addingTimeInterval(7200))
+        snackDraft.displayName = "Ｓｐｉｎａｃｈ"
+        snackDraft.brandName = " Box "
+        snackDraft.merchantName = "BOX"
+        let snack = try store.saveIntake(snackDraft)
         let otherSnack = try addIntake("零食", type: .snack, at: base, store: store)
 
         var symptom = SymptomDraft(now: base.addingTimeInterval(4 * 3600))
@@ -148,6 +152,8 @@ final class PhaseFourTests: XCTestCase {
         XCTAssertEqual(food.symptoms, [.diarrhea])
         XCTAssertEqual(summaries["ingredient:spinach"]?.intakes.count, 1)
         XCTAssertEqual(summaries["place:spinach"]?.intakes.count, 1)
+        XCTAssertEqual(summaries["brand:box"]?.target.name, "Box")
+        XCTAssertEqual(summaries["place:box"]?.target.name, "BOX")
         XCTAssertEqual(summaries["food:零食"]?.evidenceCount, 0)
         XCTAssertEqual(summaries["food:零食"]?.suspectedCount, 1)
 

@@ -15,6 +15,7 @@ struct HistoryView: View {
     @State private var search = ""
     @State private var filter = TimelineFilter()
     @State private var showingFilters = false
+    @FocusState private var searchFocused: Bool
 
     private var days: [DayGroup] {
         let calendar = Calendar.autoupdatingCurrent
@@ -85,7 +86,9 @@ struct HistoryView: View {
             HStack(spacing: 10) {
                 Image(systemName: "magnifyingglass").accessibilityHidden(true)
                 TextField("history.search", text: $search)
+                    .focused($searchFocused)
                     .submitLabel(.search)
+                    .onSubmit { searchFocused = false }
                     .accessibilityIdentifier("history.search")
                 if !search.isEmpty {
                     Button {
@@ -96,6 +99,7 @@ struct HistoryView: View {
                             .frame(width: 44, height: 44)
                     }
                     .buttonStyle(.plain)
+                    .accessibilityIdentifier("history.clearSearch")
                 }
             }
             .padding(.horizontal, 12)
@@ -105,6 +109,7 @@ struct HistoryView: View {
                 RoundedRectangle(cornerRadius: 12).strokeBorder(DiaryTheme.border).allowsHitTesting(false)
             }
             Button {
+                searchFocused = false
                 showingFilters = true
             } label: {
                 Label(

@@ -39,7 +39,9 @@ final class PhaseFourFlowTests: XCTestCase {
         XCTAssertTrue(judgment.label.contains("未判断"))
         judgment.tap()
         app.buttons["我怀疑与此有关"].tap()
-        XCTAssertTrue(judgment.label.contains("我怀疑与此有关"))
+        let suspected = app.descendants(matching: .any).matching(identifier: "exposure.judgment")
+            .matching(NSPredicate(format: "label CONTAINS %@", "我怀疑与此有关")).firstMatch
+        XCTAssertTrue(suspected.waitForExistence(timeout: 5))
         review.buttons["完成"].tap()
 
         app.tabBars.buttons["避雷"].tap()
@@ -65,7 +67,7 @@ final class PhaseFourFlowTests: XCTestCase {
         search.tap()
         search.typeText(name + "\n")
         XCTAssertTrue(app.staticTexts["没有符合条件的记录"].waitForExistence(timeout: 5))
-        app.buttons["清除搜索"].tap()
+        app.buttons["history.clearSearch"].tap()
 
         let body = app.descendants(matching: .any).matching(identifier: "symptom.record").firstMatch
         reveal(body, app: app)

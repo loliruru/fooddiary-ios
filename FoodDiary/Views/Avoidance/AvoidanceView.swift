@@ -56,6 +56,9 @@ struct AvoidanceView: View {
                 }
             }
         }
+        .navigationDestination(for: AvoidanceTarget.self) { target in
+            AvoidanceDetail(target: target)
+        }
     }
 
     @ViewBuilder
@@ -72,9 +75,7 @@ struct AvoidanceView: View {
 
     private func summaryLinks(_ summaries: [AvoidanceSummary]) -> some View {
         ForEach(summaries) { summary in
-            NavigationLink {
-                AvoidanceDetail(target: summary.target)
-            } label: {
+            NavigationLink(value: summary.target) {
                 DiaryCard {
                     HStack(alignment: .top, spacing: 10) {
                         AvoidanceSummaryText(summary: summary)
