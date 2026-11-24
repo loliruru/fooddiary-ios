@@ -83,8 +83,15 @@ struct IntakeDraft {
         DiaryName.text(displayName) != nil && (!isHomemade || ingredients.allSatisfy(\.isValid))
     }
 
+    func comboName(locale: Locale) -> String? {
+        if let name = DiaryName.text(displayName) { return name }
+        let names = ingredients.compactMap { DiaryName.text($0.name) }
+        return names.isEmpty ? nil : names.formatted(.list(type: .and).locale(locale))
+    }
+
     mutating func applyCombo(_ combo: MealCombo) throws {
         let rows = try combo.ingredientDrafts()
+        mealType = .homemade
         displayName = combo.name
         ingredients = rows
     }

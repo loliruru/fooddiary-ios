@@ -93,8 +93,9 @@ private struct ComboRows: View {
                 let names = combo.ingredientNames
                 VStack(alignment: .leading, spacing: 5) {
                     Text(combo.name).font(.headline)
-                    if !names.isEmpty {
-                        Text(names.formatted(.list(type: .and).locale(locale)))
+                    let summary = names.formatted(.list(type: .and).locale(locale))
+                    if !summary.isEmpty && summary != combo.name {
+                        Text(summary)
                             .font(.subheadline)
                             .foregroundStyle(DiaryTheme.secondaryText)
                             .lineLimit(2)

@@ -3,6 +3,26 @@ import XCTest
 @testable import FoodDiary
 
 final class PhaseThreeStorageTests: XCTestCase {
+    func testComboNameUsesIngredientsWhenMealNameIsBlank() {
+        let locale = Locale(identifier: "zh-Hans")
+        var draft = IntakeDraft(type: .meal)
+        draft.mealType = .homemade
+        XCTAssertNil(draft.comboName(locale: locale))
+
+        var noodles = IngredientDraft()
+        noodles.name = " 面条 "
+        var spinach = IngredientDraft()
+        spinach.name = "菠菜"
+        draft.ingredients = [noodles, IngredientDraft(), spinach]
+        draft.displayName = " "
+        XCTAssertEqual(draft.comboName(locale: locale), "面条和菠菜")
+        XCTAssertFalse(draft.canSave)
+
+        draft.displayName = " 午餐 "
+        XCTAssertEqual(draft.comboName(locale: locale), "午餐")
+        XCTAssertTrue(draft.canSave)
+    }
+
     @MainActor
     func testIndependentSymptomPersistsBothTimesAndNormalizesDiarrheaCount() throws {
         let url = try temporaryStore()

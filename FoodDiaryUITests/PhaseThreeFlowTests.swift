@@ -49,7 +49,8 @@ final class PhaseThreeFlowTests: XCTestCase {
     func testCreateApplyEditAndDeleteComboFromApp() {
         continueAfterFailure = false
         let app = launchDiary()
-        let name = "Combo \(UUID().uuidString.prefix(8))"
+        let ingredients = ["Noodles", "Spinach"]
+        let name = ingredients.formatted(.list(type: .and).locale(Locale(identifier: "zh-Hans")))
         let nameField = app.textFields["餐名或菜品名称"]
         let addMeal = app.buttons["记录一餐"]
         XCTAssertTrue(addMeal.waitForExistence(timeout: 10))
@@ -57,25 +58,29 @@ final class PhaseThreeFlowTests: XCTestCase {
         let homemade = app.buttons["自制"]
         XCTAssertTrue(homemade.waitForExistence(timeout: 5))
         homemade.tap()
-        XCTAssertTrue(nameField.waitForExistence(timeout: 5))
-        nameField.tap()
-        nameField.typeText(name + "\n")
-        XCTAssertTrue(app.keyboards.firstMatch.waitForNonExistence(timeout: 5), app.debugDescription)
-        let saveCombo = app.buttons["保存为 Combo"]
-        if !saveCombo.isHittable {
-            let form = app.collectionViews.firstMatch
-            form.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.75))
-                .press(forDuration: 0.05, thenDragTo: form.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.45)))
+
+        let addIngredient = app.buttons["添加食材"]
+        for ingredient in ingredients {
+            showInForm(addIngredient, app: app)
+            addIngredient.tap()
+            let emptyIngredient = app.textFields.matching(NSPredicate(
+                format: "placeholderValue == %@ AND NOT (value IN %@)", "食材名称", ingredients
+            )).firstMatch
+            showInForm(emptyIngredient, app: app)
+            emptyIngredient.tap()
+            emptyIngredient.typeText(ingredient + "\n")
+            XCTAssertTrue(app.keyboards.firstMatch.waitForNonExistence(timeout: 5), app.debugDescription)
         }
-        XCTAssertTrue(saveCombo.isHittable)
-        XCTAssertTrue(saveCombo.isEnabled, app.debugDescription)
+
+        let saveCombo = app.buttons["保存为 Combo"]
+        showInForm(saveCombo, app: app)
         saveCombo.tap()
-        XCTAssertTrue(saveCombo.waitForNonExistence(timeout: 5), app.debugDescription)
+        let notice = app.alerts.firstMatch
+        XCTAssertTrue(notice.staticTexts["已保存为 Combo"].waitForExistence(timeout: 5), app.debugDescription)
+        notice.buttons["完成"].tap()
         app.navigationBars.buttons["取消"].tap()
 
         addMeal.tap()
-        XCTAssertTrue(homemade.waitForExistence(timeout: 5))
-        homemade.tap()
         let use = app.buttons["套用 Combo"]
         XCTAssertTrue(use.waitForExistence(timeout: 5))
         use.tap()
@@ -84,6 +89,7 @@ final class PhaseThreeFlowTests: XCTestCase {
         combo.tap()
         XCTAssertTrue(nameField.waitForExistence(timeout: 5))
         XCTAssertEqual(nameField.value as? String, name)
+        XCTAssertTrue(homemade.isSelected)
         app.navigationBars.buttons["保存"].tap()
 
         app.tabBars.buttons["设置"].tap()
@@ -116,6 +122,9 @@ final class PhaseThreeFlowTests: XCTestCase {
         XCTAssertTrue(record.waitForExistence(timeout: 5))
         record.tap()
         XCTAssertTrue(app.staticTexts[name].waitForExistence(timeout: 5))
+        for ingredient in ingredients {
+            XCTAssertTrue(app.staticTexts[ingredient].exists)
+        }
         let deleteMeal = app.buttons["删除饮食记录"]
         if !deleteMeal.isHittable { app.swipeUp() }
         deleteMeal.tap()
@@ -128,5 +137,19 @@ final class PhaseThreeFlowTests: XCTestCase {
         app.launchArguments = ["-AppleLanguages", "(zh-Hans)", "-AppleLocale", "zh_CN"]
         app.launch()
         return app
+    }
+
+    private func showInForm(_ element: XCUIElement, app: XCUIApplication) {
+        let form = app.collectionViews.firstMatch
+        let top = app.navigationBars.firstMatch.frame.maxY + 8
+        let bottom = app.frame.maxY - 44
+        for _ in 0..<7 {
+            let above = element.exists && element.frame.midY < top
+            if !above && element.isHittable && element.frame.midY < bottom { return }
+            let start = form.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: above ? 0.34 : 0.73))
+            let end = form.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: above ? 0.68 : 0.40))
+            start.press(forDuration: 0.05, thenDragTo: end)
+        }
+        XCTFail("Could not scroll to \(element)")
     }
 }

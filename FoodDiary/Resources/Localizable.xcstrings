@@ -122,6 +122,17 @@
         }
       }
     },
+    "combo.nameOrIngredientsRequired": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "请填写餐名或至少添加一种食材。"
+          }
+        }
+      }
+    },
     "combo.openError": {
       "extractionState": "manual",
       "localizations": {
@@ -150,7 +161,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "模板会立即保存，本次餐食仍可继续编辑。"
+            "value": "餐名留空时会用食材命名。取消本餐仍会保留已保存的模板。"
           }
         }
       }
@@ -194,7 +205,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "套用后会替换本次的餐名和食材。"
+            "value": "套用后会切换到自制，并填入模板里的餐名和食材。"
           }
         }
       }

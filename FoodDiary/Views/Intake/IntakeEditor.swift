@@ -20,6 +20,7 @@ struct IntakeEditor: View {
     }
 
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.locale) private var locale
     @Environment(\.modelContext) private var context
     @Environment(\.dynamicTypeSize) private var typeSize
     @Query(sort: \IntakeEvent.eventTime, order: .reverse) private var events: [IntakeEvent]
@@ -80,7 +81,7 @@ struct IntakeEditor: View {
                     mealChoices
                 }
 
-                if draft.isHomemade && editing == nil && !combos.isEmpty {
+                if draft.intakeType == .meal && editing == nil && !combos.isEmpty {
                     Section {
                         Button {
                             choosingCombo = true
@@ -117,10 +118,10 @@ struct IntakeEditor: View {
                             } else {
                                 Button(action: saveCombo) {
                                     Label("combo.save", systemImage: "plus.square.on.square")
-                                        .frame(minHeight: 44)
+                                        .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+                                        .contentShape(Rectangle())
                                 }
                                 .buttonStyle(.borderless)
-                                .disabled(!draft.canSave)
                             }
                         } footer: {
                             if !comboSaved {
@@ -320,9 +321,18 @@ struct IntakeEditor: View {
     }
 
     private func saveCombo() {
+        guard draft.ingredients.allSatisfy(\.isValid) else {
+            showNotice("intake.ingredientRequired")
+            return
+        }
+        guard let name = draft.comboName(locale: locale) else {
+            showNotice("combo.nameOrIngredientsRequired")
+            return
+        }
         do {
-            try DiaryStore(context: context).saveCombo(name: draft.displayName, ingredients: draft.ingredients)
+            try DiaryStore(context: context).saveCombo(name: name, ingredients: draft.ingredients)
             comboSaved = true
+            showNotice("combo.saved")
         } catch {
             showNotice("common.saveError")
         }
