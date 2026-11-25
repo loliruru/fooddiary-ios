@@ -55,6 +55,7 @@ struct DiaryDataView: View {
             }
             DiaryCard {
                 Button(role: .destructive) {
+                    onDataReset()
                     isConfirmingClear = true
                 } label: {
                     Label("data.clear", systemImage: "trash")
@@ -127,6 +128,7 @@ struct DiaryDataView: View {
                 }.value
                 try Task.checkCancellation()
                 pendingBackup = backup
+                onDataReset()
                 isConfirmingRestore = true
             }
         } catch where Task.isCancelled {
@@ -147,7 +149,6 @@ struct DiaryDataView: View {
         defer { pendingBackup = nil }
         do {
             try DiaryStore(context: context).restore(backup)
-            onDataReset()
             show("data.restored")
         } catch {
             show("data.restoreError")
@@ -157,7 +158,6 @@ struct DiaryDataView: View {
     private func clear() {
         do {
             try DiaryStore(context: context).clearAll()
-            onDataReset()
             show("data.cleared")
         } catch {
             show("data.clearError")

@@ -97,7 +97,14 @@ struct IntakeDetail: View {
     let event: IntakeEvent
     let onRecordAdded: () -> Void
 
+    @ViewBuilder
     var body: some View {
+        if event.modelContext != nil && !event.isDeleted {
+            detail
+        }
+    }
+
+    private var detail: some View {
         DiaryPage {
             DiaryCard {
                 VStack(alignment: .leading, spacing: 8) {

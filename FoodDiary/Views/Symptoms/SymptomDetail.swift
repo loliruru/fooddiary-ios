@@ -61,7 +61,14 @@ struct SymptomDetail: View {
     let event: SymptomEvent
     var onDelete: (() -> Void)?
 
+    @ViewBuilder
     var body: some View {
+        if event.modelContext != nil && !event.isDeleted {
+            detail
+        }
+    }
+
+    private var detail: some View {
         DiaryPage {
             DiaryCard {
                 VStack(alignment: .leading, spacing: 12) {
