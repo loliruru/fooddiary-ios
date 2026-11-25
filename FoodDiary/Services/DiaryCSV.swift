@@ -87,7 +87,8 @@ extension DiaryBackup {
     }
 
     static func csvField(_ field: String) -> String {
-        guard field.contains(where: { $0 == "," || $0 == "\"" || $0.isNewline }) else { return field }
-        return "\"" + field.replacingOccurrences(of: "\"", with: "\"\"") + "\""
+        let needsQuoting = field.unicodeScalars.contains { $0 == "," || $0 == "\"" || $0 == "\r" || $0 == "\n" }
+        guard needsQuoting else { return field }
+        return "\"" + field.replacingOccurrences(of: "\"", with: "\"\"", options: .literal) + "\""
     }
 }

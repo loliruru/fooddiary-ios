@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct SettingsView: View {
+    let onDataReset: () -> Void
+
     var body: some View {
         DiaryPage {
             DiaryPageTitle(title: "tabs.settings")
@@ -29,7 +31,7 @@ struct SettingsView: View {
             .buttonStyle(DiaryButtonStyle(kind: .secondary))
 
             NavigationLink {
-                DiaryDataView()
+                DiaryDataView(onDataReset: onDataReset)
             } label: {
                 Label("data.title", systemImage: "externaldrive")
             }

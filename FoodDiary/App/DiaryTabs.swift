@@ -10,6 +10,7 @@ struct DiaryTabs: View {
 
     @State private var selection: Tab = .home
     @State private var lastSaved: UUID?
+    @State private var dataRevision = UUID()
 
     var body: some View {
         TabView(selection: $selection) {
@@ -17,6 +18,7 @@ struct DiaryTabs: View {
                 HomeView(showSaved: lastSaved != nil, onRecordAdded: recordAdded)
                     .toolbar(.hidden, for: .navigationBar)
             }
+            .id(dataRevision)
             .tabItem { Label("tabs.home", systemImage: "house") }
             .tag(Tab.home)
 
@@ -24,6 +26,7 @@ struct DiaryTabs: View {
                 HistoryView(onRecordAdded: recordAdded)
                     .toolbar(.hidden, for: .navigationBar)
             }
+            .id(dataRevision)
             .tabItem { Label("tabs.history", systemImage: "list.bullet.rectangle") }
             .tag(Tab.history)
 
@@ -31,11 +34,12 @@ struct DiaryTabs: View {
                 AvoidanceView()
                     .toolbar(.hidden, for: .navigationBar)
             }
+            .id(dataRevision)
             .tabItem { Label("tabs.avoidance", systemImage: "eye") }
             .tag(Tab.avoidance)
 
             NavigationStack {
-                SettingsView()
+                SettingsView(onDataReset: dataReset)
                     .toolbar(.hidden, for: .navigationBar)
             }
             .tabItem { Label("tabs.settings", systemImage: "gearshape") }
@@ -55,5 +59,10 @@ struct DiaryTabs: View {
         selection = .home
         lastSaved = UUID()
         UIAccessibility.post(notification: .announcement, argument: String(localized: "home.saved"))
+    }
+
+    private func dataReset() {
+        lastSaved = nil
+        dataRevision = UUID()
     }
 }

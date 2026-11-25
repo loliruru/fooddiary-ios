@@ -146,7 +146,8 @@ struct DiaryBackup: Codable, Sendable {
         let mealIDs = Set(intakes.filter { $0.intakeType == IntakeType.meal.rawValue }.map(\.id))
         let symptomIDs = Set(symptoms.map(\.id))
         let ingredientIDs = intakes.flatMap { $0.ingredients.map(\.id) }
-        guard intakeIDs.count == intakes.count, symptomIDs.count == symptoms.count, intakeIDs.isDisjoint(with: symptomIDs),
+        guard Self.validDates(exportedAt),
+              intakeIDs.count == intakes.count, symptomIDs.count == symptoms.count, intakeIDs.isDisjoint(with: symptomIDs),
               Self.isUnique(ingredientIDs), Self.isUnique(exposureLinks.map(\.id)),
               Self.isUnique(savedPlaces.map(\.id)), Self.isUnique(savedFoods.map(\.id)),
               Self.isUnique(mealCombos.map(\.id)), Self.isUnique(avoidanceStatuses.map(\.id)),
@@ -158,14 +159,14 @@ struct DiaryBackup: Codable, Sendable {
         var exposuresBySymptom: [UUID: Set<UUID>] = [:]
         for link in exposureLinks {
             guard symptomIDs.contains(link.symptomID), intakeIDs.contains(link.intakeID),
-                  ExposureJudgment(rawValue: link.judgment) != nil,
+                  ExposureJudgment(rawValue: link.judgment) != nil, Self.validDates(link.updatedAt),
                   exposuresBySymptom[link.symptomID, default: []].insert(link.intakeID).inserted
             else { throw FormatError.invalidData }
         }
 
         for intake in intakes {
             let mealType = intake.mealType.flatMap(MealType.init(rawValue:))
-            guard DiaryName.text(intake.displayName) != nil,
+            guard DiaryName.text(intake.displayName) != nil, Self.validDates(intake.eventTime, intake.createdAt, intake.updatedAt),
                   let type = IntakeType(rawValue: intake.intakeType),
                   type == .meal ? mealType != nil : intake.mealType == nil,
                   mealType == .homemade || intake.ingredients.isEmpty,
@@ -173,7 +174,7 @@ struct DiaryBackup: Codable, Sendable {
             else { throw FormatError.invalidData }
         }
         for symptom in symptoms {
-            guard symptom.linkedMealID.map(mealIDs.contains) ?? true,
+            guard symptom.linkedMealID.map(mealIDs.contains) ?? true, Self.validDates(symptom.symptomTime, symptom.recordedAt),
                   symptom.symptoms.allSatisfy({ Symptom(rawValue: $0) != nil }),
                   Self.isUnique(symptom.symptoms), symptom.diarrheaCount >= 0,
                   symptom.diarrheaCount == 0 || symptom.symptoms.contains(Symptom.diarrhea.rawValue),
@@ -182,14 +183,15 @@ struct DiaryBackup: Codable, Sendable {
                   symptom.duration.map({ SymptomDuration(rawValue: $0) != nil }) ?? true
             else { throw FormatError.invalidData }
         }
-        guard savedPlaces.allSatisfy({ DiaryName.text($0.name) != nil }),
-              savedFoods.allSatisfy({ DiaryName.text($0.name) != nil }),
+        guard savedPlaces.allSatisfy({ DiaryName.text($0.name) != nil && Self.validDates($0.createdAt, $0.lastUsedAt) }),
+              savedFoods.allSatisfy({ DiaryName.text($0.name) != nil && Self.validDates($0.createdAt, $0.lastUsedAt) }),
               mealCombos.allSatisfy({ combo in
-                  DiaryName.text(combo.name) != nil && combo.ingredients.allSatisfy { DiaryName.text($0.name) != nil }
+                  DiaryName.text(combo.name) != nil && Self.validDates(combo.createdAt, combo.updatedAt)
+                      && combo.ingredients.allSatisfy { DiaryName.text($0.name) != nil }
               }),
               avoidanceStatuses.allSatisfy({ status in
                   DiaryName.text(status.displayName) != nil && AvoidanceKind(rawValue: status.kind) != nil
-                      && AvoidanceChoice(rawValue: status.choice) != nil
+                      && AvoidanceChoice(rawValue: status.choice) != nil && Self.validDates(status.updatedAt)
               }),
               intakes.compactMap(\.photoJPEG).allSatisfy(DiaryPhotos.isBackupJPEG),
               savedPlaces.compactMap(\.photoJPEG).allSatisfy(DiaryPhotos.isBackupJPEG)
@@ -198,5 +200,10 @@ struct DiaryBackup: Codable, Sendable {
 
     private static func isUnique<T: Hashable>(_ values: [T]) -> Bool {
         Set(values).count == values.count
+    }
+
+    private static func validDates(_ dates: Date?...) -> Bool {
+        let supported = Date.distantPast...Date.distantFuture
+        return dates.compactMap { $0 }.allSatisfy(supported.contains)
     }
 }

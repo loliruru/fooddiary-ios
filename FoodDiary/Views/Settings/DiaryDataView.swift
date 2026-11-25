@@ -8,6 +8,8 @@ struct DiaryDataView: View {
         case readBackup(URL)
     }
 
+    let onDataReset: () -> Void
+
     @Environment(\.modelContext) private var context
     @State private var operation: Operation?
     @State private var exportFile: DiaryExportFile?
@@ -145,6 +147,7 @@ struct DiaryDataView: View {
         defer { pendingBackup = nil }
         do {
             try DiaryStore(context: context).restore(backup)
+            onDataReset()
             show("data.restored")
         } catch {
             show("data.restoreError")
@@ -154,6 +157,7 @@ struct DiaryDataView: View {
     private func clear() {
         do {
             try DiaryStore(context: context).clearAll()
+            onDataReset()
             show("data.cleared")
         } catch {
             show("data.clearError")

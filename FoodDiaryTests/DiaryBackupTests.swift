@@ -77,6 +77,7 @@ final class DiaryBackupTests: XCTestCase {
         XCTAssertTrue(contents.hasPrefix("\u{FEFF}recordType,id,intakeID,symptomID,comboID,linkedMealID,position,"))
         XCTAssertEqual(DiaryBackup.csvField(specialText), "\"中文, \"\"有引号\"\"\n下一行\"")
         XCTAssertEqual(DiaryBackup.csvField("第一行\r\n第二行"), "\"第一行\r\n第二行\"")
+        XCTAssertEqual(DiaryBackup.csvField(",\u{0301}"), "\",\u{0301}\"")
         XCTAssertTrue(contents.contains(DiaryBackup.csvField(specialText)))
         for type in ["intake", "ingredient", "symptom", "exposure", "savedPlace", "savedFood",
                      "mealCombo", "comboIngredient", "avoidanceStatus"] {

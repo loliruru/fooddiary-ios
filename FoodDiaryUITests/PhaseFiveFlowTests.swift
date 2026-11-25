@@ -32,6 +32,8 @@ final class PhaseFiveFlowTests: XCTestCase {
         let record = app.descendants(matching: .any).matching(identifier: "intake.record")
             .matching(NSPredicate(format: "label CONTAINS %@", name)).firstMatch
         reveal(record, app: app)
+        record.tap()
+        XCTAssertTrue(app.staticTexts[name].waitForExistence(timeout: 5))
 
         app.tabBars.buttons["设置"].tap()
         reveal(clear, app: app)
