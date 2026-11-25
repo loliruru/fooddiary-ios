@@ -65,4 +65,9 @@
 - 已下载 [Phase 4 artifact](https://github.com/loliruru/fooddiary-ios/actions/runs/45425716133/artifacts/14938166736)，核对 `Payload/FoodDiary.app`、arm64、最低 iOS 17.0、构建号 6、Bundle ID、App Icon、192 条简体中文字符串以及无签名资源和描述文件。IPA SHA-256 为 `2a2953ecd889b23e74a2749b33217442857077c50cc299f8625ada2925079b21`。
 - 2026-11-25 用户确认 Phase 4 后实施 Phase 5，发布候选版本为 1.0.0（构建 7）。设置新增 CSV、JSON 备份、系统分享、文件恢复及清空确认。JSON 保留照片、原记录 UUID、关联判断和模板。恢复显式确认后替换本机数据，保存失败回滚。CSV 使用带 BOM 的 UTF-8、带时区偏移的时间和可关联的 UUID。
 - 新增备份往返、CSV 转义、恢复失败回滚、清空照片以及大字号和二次确认的测试。发布候选的 iPhone 覆盖安装、分享、恢复和无障碍验收见 [README.md](README.md)。
+- 独立验收分支 `codex/phase5-visual-check` 在 iPhone 17 模拟器（iOS 26.5）的浅色和深色模式中均跑通四个标签页、最大辅助字号下的备份和清空确认，并打开 CSV 与 JSON 的系统分享面板。已下载和检查截图。[模拟器运行](https://github.com/loliruru/fooddiary-ios/actions/runs/45630743285) · [截图产物](https://github.com/loliruru/fooddiary-ios/actions/runs/45630743285/artifacts/15032660514)
+- 2026-11-25 完成 Phase 5 云端验收，最终工程提交为 `9c9fc5715348e72f14845cf58e2c73097a5ca302`。Windows 检查通过 49 个 Swift 文件语法、216 条简体中文字符串、XcodeGen 与工作流 YAML、构建脚本语法和 Git 差异。V2 规格原文件保持一致。
+- [Actions run 45634479809](https://github.com/loliruru/fooddiary-ios/actions/runs/45634479809) 的 arm64 真机 Release 构建成功。iPhone 17 Pro 模拟器（iOS 26.2）的 19 项单元与存储测试、6 项界面测试全部通过。覆盖 JSON 恢复后重开存储、历史与模板独立性、照片回滚、CSV 转义、清空前取消、从旧记录详情切到设置发起清空及重启后的空状态。
+- 已下载 [Phase 5 artifact](https://github.com/loliruru/fooddiary-ios/actions/runs/45634479809/artifacts/15032549306)，核对 `Payload/FoodDiary.app`、arm64、最低 iOS 17.0、1.0.0（构建 7）、Bundle ID、App Icon、216 条简体中文字符串以及无签名资源和描述文件。IPA SHA-256 为 `a215b317f3e8b1a6085b8ffcdc81e471a634bfc3fea714ac49937e3a7c8393f7`。
+- Phase 5 待用户完成 iPhone 覆盖安装、保存 JSON 到「文件」后恢复和 VoiceOver 验收。
 - 后续阶段更新本节的完成范围、提交、云端 run、验收结果及待办。真机交互按 README 的侧载流程在 iPhone 上验收。
