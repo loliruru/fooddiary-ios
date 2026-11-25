@@ -28,24 +28,34 @@ struct SettingsView: View {
             }
             .buttonStyle(DiaryButtonStyle(kind: .secondary))
 
+            NavigationLink {
+                DiaryDataView()
+            } label: {
+                Label("data.title", systemImage: "externaldrive")
+            }
+            .buttonStyle(DiaryButtonStyle(kind: .secondary))
+
             DiaryCard {
-                DiaryEmptyState(
-                    title: "settings.privacy",
-                    message: "settings.privacy.message",
-                    symbol: "lock.shield"
-                )
+                VStack(alignment: .leading, spacing: 10) {
+                    Label("settings.privacy", systemImage: "lock.shield")
+                        .font(.headline)
+                        .accessibilityAddTraits(.isHeader)
+                    Text("settings.privacy.message")
+                    Text("settings.privacy.sharing")
+                }
+                .font(.subheadline)
             }
 
-            if let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
+            if let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
+               let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String {
                 DiaryCard {
-                    HStack(alignment: .firstTextBaseline, spacing: 12) {
+                    LabeledContent {
+                        Text("settings.versionValue \(version) \(build)")
+                            .monospacedDigit()
+                    } label: {
                         Label("settings.version", systemImage: "info.circle")
-                            .font(.subheadline.weight(.medium))
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                        Text(version)
-                            .font(.subheadline.monospacedDigit())
-                            .foregroundStyle(DiaryTheme.secondaryText)
                     }
+                    .font(.subheadline)
                     .accessibilityElement(children: .combine)
                 }
             }

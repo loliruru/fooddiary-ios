@@ -1,7 +1,7 @@
 import Foundation
 import SwiftData
 
-struct ComboIngredient: Codable {
+struct ComboIngredient: Codable, Sendable {
     let name: String
     let purchasePlaceName: String?
     let amountText: String?

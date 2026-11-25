@@ -9,6 +9,7 @@ struct HistoryView: View {
     }
 
     let onRecordAdded: () -> Void
+    @Environment(\.dynamicTypeSize) private var typeSize
     @Query private var events: [IntakeEvent]
     @Query private var symptoms: [SymptomEvent]
     @State private var creating: RecordAction?
@@ -29,10 +30,9 @@ struct HistoryView: View {
     var body: some View {
         DiaryPage {
             DiaryPageTitle(title: "tabs.history")
-            ViewThatFits {
-                HStack(spacing: 10) { addButtons }
-                VStack(spacing: 10) { addButtons }
-            }
+            let layout = typeSize >= .xxxLarge
+                ? AnyLayout(VStackLayout(spacing: 10)) : AnyLayout(HStackLayout(spacing: 10))
+            layout { addButtons }
             if events.isEmpty && symptoms.isEmpty {
                 DiaryCard {
                     DiaryEmptyState(

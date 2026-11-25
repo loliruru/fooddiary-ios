@@ -48,6 +48,16 @@ struct DiaryPhotos {
         return try? Data(contentsOf: source)
     }
 
+    static func isBackupJPEG(_ data: Data) -> Bool {
+        guard let source = CGImageSourceCreateWithData(data as CFData, nil),
+              (CGImageSourceGetType(source) as String?) == UTType.jpeg.identifier,
+              let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any],
+              let width = properties[kCGImagePropertyPixelWidth] as? Int,
+              let height = properties[kCGImagePropertyPixelHeight] as? Int,
+              (1...1_600).contains(width), (1...1_600).contains(height) else { return false }
+        return CGImageSourceGetStatusAtIndex(source, 0) == .statusComplete
+    }
+
     func prepare(_ change: PhotoChange, previous: String?) throws -> String? {
         switch change {
         case .keep: return previous

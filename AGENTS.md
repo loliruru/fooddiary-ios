@@ -63,5 +63,6 @@
 - 2026-11-24 完成 Phase 4 云端验收，最终工程提交为 `0399640e561a00d257589d087310e5497fd7efca`。Windows 检查通过 42 个 Swift 源文件的语法、192 条简体中文字符串、XcodeGen 与工作流 YAML、构建脚本语法和 Git 差异。V2 规格原文件保持一致。
 - [Actions run 45425716133](https://github.com/loliruru/fooddiary-ios/actions/runs/45425716133) 的 arm64 真机 Release 构建成功，iPhone 17 Pro 模拟器（iOS 26.2）的 15 项单元与存储测试和 4 项界面测试全部通过。新增测试覆盖 Phase 3 存档升级、跨日 9.5 小时与 48 小时边界、多条判断持久化及独立删除、统计去重和手动状态、组合筛选及从避雷详情跳转原始记录。
 - 已下载 [Phase 4 artifact](https://github.com/loliruru/fooddiary-ios/actions/runs/45425716133/artifacts/14938166736)，核对 `Payload/FoodDiary.app`、arm64、最低 iOS 17.0、构建号 6、Bundle ID、App Icon、192 条简体中文字符串以及无签名资源和描述文件。IPA SHA-256 为 `2a2953ecd889b23e74a2749b33217442857077c50cc299f8625ada2925079b21`。
-- Phase 5 待用户确认。iPhone 侧载覆盖安装和真机交互按 [README.md](README.md) 的 Phase 4 步骤验收。
+- 2026-11-25 用户确认 Phase 4 后实施 Phase 5，发布候选版本为 1.0.0（构建 7）。设置新增 CSV、JSON 备份、系统分享、文件恢复及清空确认。JSON 保留照片、原记录 UUID、关联判断和模板。恢复显式确认后替换本机数据，保存失败回滚。CSV 使用带 BOM 的 UTF-8、带时区偏移的时间和可关联的 UUID。
+- 新增备份往返、CSV 转义、恢复失败回滚、清空照片以及大字号和二次确认的测试。发布候选的 iPhone 覆盖安装、分享、恢复和无障碍验收见 [README.md](README.md)。
 - 后续阶段更新本节的完成范围、提交、云端 run、验收结果及待办。真机交互按 README 的侧载流程在 iPhone 上验收。

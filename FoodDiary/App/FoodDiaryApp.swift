@@ -31,6 +31,7 @@ struct FoodDiaryApp: App {
         guard container == nil else { return }
         do {
             container = try DiaryStore.openLocal()
+            DiaryExportFile.removePreviousExports()
             openingFailed = false
         } catch {
             openingFailed = true

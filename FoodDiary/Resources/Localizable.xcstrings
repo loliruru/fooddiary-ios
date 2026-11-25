@@ -573,6 +573,248 @@
         }
       }
     },
+    "data.clear": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "清空全部数据"
+          }
+        }
+      }
+    },
+    "data.clearConfirm": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "清空本机的全部数据？"
+          }
+        }
+      }
+    },
+    "data.clearError": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "清空失败，请重试"
+          }
+        }
+      }
+    },
+    "data.clearMessage": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "将删除本机的饮食与身体记录、照片、关联判断、常用项、Combo 和手动避开状态。已保存到「文件」或分享出去的副本仍可使用。"
+          }
+        }
+      }
+    },
+    "data.cleared": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本机数据已清空"
+          }
+        }
+      }
+    },
+    "data.export": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "导出数据"
+          }
+        }
+      }
+    },
+    "data.exportCSV": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "导出 CSV"
+          }
+        }
+      }
+    },
+    "data.exportError": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无法生成导出文件，请重试"
+          }
+        }
+      }
+    },
+    "data.exportHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CSV 可用表格打开。JSON 备份包含照片，可用来恢复数据。"
+          }
+        }
+      }
+    },
+    "data.exportJSON": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "导出 JSON 备份"
+          }
+        }
+      }
+    },
+    "data.missingPhoto": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "有照片无法读取，未生成完整备份"
+          }
+        }
+      }
+    },
+    "data.preparing": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在准备文件…"
+          }
+        }
+      }
+    },
+    "data.readError": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无法读取有效的食迹 JSON 备份"
+          }
+        }
+      }
+    },
+    "data.replace": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "替换并恢复"
+          }
+        }
+      }
+    },
+    "data.restore": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "恢复 JSON 备份"
+          }
+        }
+      }
+    },
+    "data.restoreConfirm": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "用备份替换本机数据？"
+          }
+        }
+      }
+    },
+    "data.restoreError": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "恢复失败，本机记录未修改"
+          }
+        }
+      }
+    },
+    "data.restoreHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "从「文件」选择以前导出的 JSON 备份。"
+          }
+        }
+      }
+    },
+    "data.restoreMessage %lld %lld": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "此备份包含 %1$lld 条饮食与身体记录、%2$lld 个常用项与模板。继续后，本机的数据将替换为备份中的内容。"
+          }
+        }
+      }
+    },
+    "data.restored": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "备份已恢复"
+          }
+        }
+      }
+    },
+    "data.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "备份与数据"
+          }
+        }
+      }
+    },
+    "data.unsupportedVersion": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "此备份的格式版本暂不支持"
+          }
+        }
+      }
+    },
     "exposure.elapsed %@": {
       "extractionState": "manual",
       "localizations": {
@@ -1690,7 +1932,18 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "食迹使用本机存储。饮食与健康记录保存在你的设备上。"
+            "value": "饮食、身体记录和照片保存在这台 iPhone 的应用空间内。食迹无需账号，不上传记录，也不使用追踪或广告。用到照片时，由你在系统照片选择器中挑选。"
+          }
+        }
+      }
+    },
+    "settings.privacy.sharing": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "应用数据不进入系统备份。你可以在「备份与数据」中通过系统分享面板导出，或清空本机记录。导出的文件含个人记录，请存放在自己信任的位置。"
           }
         }
       }
@@ -1702,6 +1955,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "应用版本"
+          }
+        }
+      }
+    },
+    "settings.versionValue %@ %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@（构建 %2$@）"
           }
         }
       }

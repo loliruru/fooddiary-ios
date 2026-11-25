@@ -250,7 +250,7 @@ struct DiaryStore {
         if path != previous { photos.remove(previous) }
     }
 
-    private func commit(_ mutate: () throws -> Void) throws {
+    func commit(_ mutate: () throws -> Void) throws {
         do {
             try mutate()
             try context.save()
