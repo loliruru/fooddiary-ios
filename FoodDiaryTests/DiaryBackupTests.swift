@@ -146,6 +146,8 @@ final class DiaryBackupTests: XCTestCase {
     @MainActor
     private func makeFixture(in directory: URL) throws -> DiaryStore {
         let container = try DiaryStore.makeContainer(at: directory.appending(path: "Source.store"))
+        // The fixture returns the main context. Keep its owning container alive for the test.
+        addTeardownBlock { withExtendedLifetime(container) {} }
         let photos = DiaryPhotos(directory: directory.appending(path: "SourcePhotos", directoryHint: .isDirectory))
         let store = DiaryStore(context: container.mainContext, photos: photos)
         let png = try XCTUnwrap(Data(base64Encoded: "iVBORw0KGgoAAAANSUhEUgAAAAIAAAABCAIAAAB7QOjdAAAAD0lEQVR4nGP4z8DA8J8BAAf/Af8Bf4mnAAAAAElFTkSuQmCC"))

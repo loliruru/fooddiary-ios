@@ -58,6 +58,14 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             test
 
+      - name: Upload simulator failure results
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: FoodDiary-test-failure-${{ github.sha }}
+          path: build/FoodDiary-tests.xcresult
+          if-no-files-found: ignore
+
       - name: Upload unsigned IPA
         if: github.event_name != 'pull_request'
         uses: actions/upload-artifact@v7
