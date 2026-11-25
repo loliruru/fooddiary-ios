@@ -1,0 +1,60 @@
+name: Phase 5 simulator verification
+
+on:
+  push:
+    branches: [codex/phase5-visual-check]
+
+permissions:
+  contents: read
+
+jobs:
+  simulator:
+    runs-on: macos-26
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Generate Xcode project
+        run: |
+          brew list --versions xcodegen || brew install xcodegen
+          xcodegen generate --spec project.yml
+      - name: Capture backup controls and system share sheets
+        run: |
+          set -euo pipefail
+          mkdir -p build/screenshots
+          xcrun simctl list devices available --json > build/devices.json
+          device=$(python3 - <<'PY'
+          import json
+          with open("build/devices.json") as source:
+              runtimes = json.load(source)["devices"]
+          ios = [key for key in runtimes if ".iOS-" in key]
+          for key in sorted(ios, key=lambda k: [int(n) for n in k.split(".iOS-")[1].split("-")], reverse=True):
+              for device in runtimes[key]:
+                  if device["name"] == "iPhone 17" and device["isAvailable"]:
+                      print(device["udid"])
+                      raise SystemExit(0)
+          raise SystemExit("No available iPhone 17 simulator")
+          PY
+          )
+          xcrun simctl boot "$device"
+          xcrun simctl bootstatus "$device" -b
+          for appearance in light dark; do
+            echo "Testing $appearance appearance"
+            xcrun simctl ui "$device" appearance "$appearance"
+            set +e
+            xcodebuild test -project FoodDiary.xcodeproj -scheme FoodDiary -destination "platform=iOS Simulator,id=$device" -parallel-testing-enabled NO -only-testing:FoodDiaryUITests/PhaseFiveVisualTests -derivedDataPath build/DerivedData -resultBundlePath "build/$appearance.xcresult" -quiet
+            test_status=$?
+            set -e
+            xcrun xcresulttool export attachments --path "build/$appearance.xcresult" --output-path "build/screenshots/$appearance"
+            if [ "$test_status" -ne 0 ]; then
+              exit "$test_status"
+            fi
+          done
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: FoodDiary-phase5-simulator
+          path: build/screenshots
+          if-no-files-found: ignore
